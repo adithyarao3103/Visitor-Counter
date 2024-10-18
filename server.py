@@ -1,4 +1,4 @@
-from flask import Flask, Response
+from flask import Flask, Response, redirect
 from threading import Lock
 
 app = Flask(__name__)
@@ -6,6 +6,14 @@ app = Flask(__name__)
 # Global counter with thread-safe lock
 visitor_count = 0
 counter_lock = Lock()
+
+# Replace this with your GitHub repository URL
+GITHUB_REPO_URL = "https://adithyarao3103.github.io"
+
+@app.route('/')
+def root():
+    """Redirect root path to GitHub repository"""
+    return redirect(GITHUB_REPO_URL)
 
 @app.route('/increment')
 def increment():
@@ -16,16 +24,38 @@ def increment():
 
 @app.route('/show')
 def show():
-    # Create an SVG that displays the current count
+    # Calculate width based on the number of digits in visitor count
+    count_str = str(visitor_count)
+    digit_width = len(count_str) * 10
+    label_width = 80
+    padding = 20
+    total_width = label_width + digit_width + padding * 2
+
     svg = f'''<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 100">
-    <rect width="200" height="100" fill="#f0f0f0"/>
-    <text x="100" y="50" font-family="Arial" font-size="24" text-anchor="middle" alignment-baseline="middle">
-        Visitors: {visitor_count}
-    </text>
+<svg xmlns="http://www.w3.org/2000/svg" width="{total_width}" height="28">
+    <!-- Background -->
+    <rect width="{label_width + padding}" height="28" fill="#555"/>
+    <rect x="{label_width + padding}" width="{digit_width + padding}" height="28" fill="#4c1"/>
+    
+    <!-- Text -->
+    <g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" font-size="12">
+        <text x="{(label_width + padding) / 2}" y="18" fill="#fff">VISITORS</text>
+        <text x="{label_width + padding + (digit_width + padding) / 2}" y="18" fill="#fff">{count_str}</text>
+    </g>
+    
+    <!-- Add clickable link -->
+    <a href="{GITHUB_REPO_URL}">
+        <rect width="{total_width}" height="28" fill="transparent"/>
+    </a>
 </svg>'''
     
-    return Response(svg, mimetype='image/svg+xml')
+    headers = {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+    }
+    
+    return Response(svg, mimetype='image/svg+xml', headers=headers)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
