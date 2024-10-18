@@ -1,0 +1,13 @@
+{
+    "version": 2,
+    "functions": {
+    "api/counter.py": {
+    "runtime": "python3.9"
+    }
+},
+"routes": [
+    { "src": "/", "dest": "/api/counter.py" },
+    { "src": "/increment", "dest": "/api/counter.py" },
+    { "src": "/show", "dest": "/api/counter.py" }
+]
+}
