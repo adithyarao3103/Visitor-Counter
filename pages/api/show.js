@@ -1,6 +1,12 @@
 import Redis from 'ioredis';
 
-const redis = new Redis(process.env.REDIS_URL);
+let redis;
+
+try {
+redis = new Redis(process.env.REDIS_URL);
+} catch (error) {
+console.error('Failed to create Redis instance:', error);
+}
 
 const createSvg = (count) => {
 const countStr = count.toString();
@@ -9,19 +15,15 @@ const labelWidth = 80;
 const padding = 20;
 const totalWidth = labelWidth + digitWidth + padding * 2;
 
-const LABEL_BG_COLOR = "#007EC6";
-const COUNT_BG_COLOR = "#0366D6";
-const GITHUB_REPO_URL = "https://github.com/yourusername/yourrepo"; // Replace with your repo URL
-
 return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${totalWidth}" height="28">
 <linearGradient id="labelGradient" x1="0%" y1="0%" x2="0%" y2="100%">
     <stop offset="0%" style="stop-color:#0080CF"/>
-    <stop offset="100%" style="stop-color:${LABEL_BG_COLOR}"/>
+    <stop offset="100%" style="stop-color:#007EC6"/>
 </linearGradient>
 <linearGradient id="countGradient" x1="0%" y1="0%" x2="0%" y2="100%">
     <stop offset="0%" style="stop-color:#0474E5"/>
-    <stop offset="100%" style="stop-color:${COUNT_BG_COLOR}"/>
+    <stop offset="100%" style="stop-color:#0366D6"/>
 </linearGradient>
 
 <rect width="${labelWidth + padding}" height="28" fill="url(#labelGradient)"/>
@@ -36,16 +38,19 @@ return `<?xml version="1.0" encoding="UTF-8"?>
     <text x="${labelWidth + padding + (digitWidth + padding) / 2}" y="19" fill="#000" opacity="0.3">${countStr}</text>
     <text x="${labelWidth + padding + (digitWidth + padding) / 2}" y="18" fill="#fff">${countStr}</text>
 </g>
-
-<a href="${GITHUB_REPO_URL}">
-    <rect width="${totalWidth}" height="28" fill="transparent"/>
-</a>
 </svg>`;
 };
 
 export default async function handler(req, res) {
+if (req.method !== 'GET') {
+return res.status(405).json({ error: 'Method not allowed' });
+}
+
 try {
-const count = await redis.get('visitor_count') || '0';
+let count = '0';
+if (redis) {
+    count = await redis.get('visitor_count') || '0';
+}
 
 res.setHeader('Content-Type', 'image/svg+xml');
 res.setHeader('Access-Control-Allow-Origin', '*');
@@ -55,6 +60,7 @@ res.setHeader('Expires', '0');
 
 res.status(200).send(createSvg(parseInt(count)));
 } catch (error) {
+console.error('Error getting counter:', error);
 res.status(500).json({ error: 'Failed to get counter' });
 }
 }
