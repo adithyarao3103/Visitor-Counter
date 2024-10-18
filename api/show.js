@@ -1,23 +1,22 @@
-// /api/show.js
 import { kv } from '@vercel/kv';
 
 export default async function handler(req, res) {
 try {
-// Get current count
+
 const count = await kv.get('visitor_count') || 0;
 
-// Calculate widths based on content
+
 const labelText = 'visitors';
 const countText = count.toLocaleString();
 const labelWidth = labelText.length * 6.5 + 10;
 const countWidth = countText.length * 7.5 + 10;
 const totalWidth = labelWidth + countWidth;
 
-// Using GitHub-style blue colors
-const darkBlue = '#007EC6';   // Dark blue for the count background
-const greyBlue = '#444D56';   // Grey-blue for the label background
 
-// Create GitHub-style badge SVG
+const darkBlue = '#007EC6';
+const greyBlue = '#444D56';
+
+
 const svg = `
     <svg xmlns="http://www.w3.org/2000/svg" width="${totalWidth}" height="20">
     <linearGradient id="b" x2="0" y2="100%">
@@ -41,17 +40,17 @@ const svg = `
     </svg>
 `;
 
-// Set content type to SVG and cache headers
+
 res.setHeader('Content-Type', 'image/svg+xml');
 res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
 res.setHeader('Pragma', 'no-cache');
 res.setHeader('Expires', '0');
 
-// Send SVG
+
 res.status(200).send(svg);
 } catch (error) {
 console.error('Error getting counter:', error);
-// Return a default error badge if something goes wrong
+
 const errorSvg = `
     <svg xmlns="http://www.w3.org/2000/svg" width="90" height="20">
     <rect width="90" height="20" rx="3" fill="#E5534B"/>
