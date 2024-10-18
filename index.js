@@ -5,20 +5,19 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Path to the JSON file where the counter is stored
-const counterFilePath = path.join(__dirname, 'counter.json');
+// Visitor counter file path
+const counterFilePath = path.resolve(__dirname, 'counter.json');
 
-// Function to read the counter from the file
+// Get the current visitor counter value
 function getCounter() {
     if (!fs.existsSync(counterFilePath)) {
-        // Initialize the counter file if it doesn't exist
         fs.writeFileSync(counterFilePath, JSON.stringify({ count: 0 }));
     }
     const data = fs.readFileSync(counterFilePath, 'utf-8');
     return JSON.parse(data).count;
 }
 
-// Function to increment and save the counter to the file
+// Increment the visitor counter
 function incrementCounter() {
     let count = getCounter();
     count += 1;
@@ -26,13 +25,12 @@ function incrementCounter() {
     return count;
 }
 
-// Route to increment the counter
+// Routes
 app.get('/increment', (req, res) => {
     const count = incrementCounter();
     res.send(`Visitor count incremented to: ${count}`);
 });
 
-// Route to display the counter as an SVG badge
 app.get('/show', (req, res) => {
     const count = getCounter();
     const svg = `
@@ -46,6 +44,7 @@ app.get('/show', (req, res) => {
     res.send(svg);
 });
 
+// Listen on the specified port
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
