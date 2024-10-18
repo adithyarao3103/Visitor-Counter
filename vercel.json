@@ -8,6 +8,13 @@
 ],
 "routes": [
     {
+    "src": "/",
+    "status": 301,
+    "headers": {
+        "Location": "https://github.com/adithyarao3103/Visitor-Counter"
+    }
+    },
+    {
     "src": "/increment",
     "dest": "/api/increment.js"
     },
