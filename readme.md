@@ -1,13 +1,16 @@
 # Visitor Counter for Static Website
 
-This project deployed on vercel presents a simple visitor counter always pointing to my website.
+This project deployed on vercel presents a simple visitor counter.
 
-Presents two routes:
+> [!Important]
+> Each vercel deployment will have one single value of counter. Using it on multiple sites will lead to all the counters being incremented, which is not the intended behavior.
+
+This presents two routes:
 
 - /increment: Increments the counter by 1.
 - /show: Returns a svg displaying the current count.
 
-To use for your static website,
+To use on your static website,
 
 - Clone this repository and deploy your own instance on Vercel.
 - Create a Vercel KV database, and connect it to the deployment.
