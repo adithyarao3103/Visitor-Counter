@@ -1,3 +1,4 @@
+// /api/show.js
 import { kv } from '@vercel/kv';
 
 export default async function handler(req, res) {
@@ -5,24 +6,55 @@ try {
 // Get current count
 const count = await kv.get('visitor_count') || 0;
 
-// Create SVG
+// Calculate widths based on content
+const labelText = 'visitors';
+const countText = count.toLocaleString();
+const labelWidth = labelText.length * 6.5 + 10; // Approximate width calculation
+const countWidth = countText.length * 7.5 + 10;
+const totalWidth = labelWidth + countWidth;
+
+// Create GitHub-style badge SVG
 const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="150" height="30">
-    <rect width="150" height="30" fill="#555"/>
-    <text x="10" y="20" font-family="Arial" font-size="14" fill="white">
-        Visitors: ${count}
-    </text>
+    <svg xmlns="http://www.w3.org/2000/svg" width="${totalWidth}" height="20">
+    <linearGradient id="b" x2="0" y2="100%">
+        <stop offset="0" stop-color="#bbb" stop-opacity=".1"/>
+        <stop offset="1" stop-opacity=".1"/>
+    </linearGradient>
+    <mask id="a">
+        <rect width="${totalWidth}" height="20" rx="3" fill="#fff"/>
+    </mask>
+    <g mask="url(#a)">
+        <path fill="#555" d="M0 0h${labelWidth}v20H0z"/>
+        <path fill="#4c1" d="M${labelWidth} 0h${countWidth}v20H${labelWidth}z"/>
+        <path fill="url(#b)" d="M0 0h${totalWidth}v20H0z"/>
+    </g>
+    <g fill="#fff" text-anchor="middle" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11">
+        <text x="${labelWidth/2}" y="15" fill="#010101" fill-opacity=".3">${labelText}</text>
+        <text x="${labelWidth/2}" y="14">${labelText}</text>
+        <text x="${labelWidth + countWidth/2}" y="15" fill="#010101" fill-opacity=".3">${countText}</text>
+        <text x="${labelWidth + countWidth/2}" y="14">${countText}</text>
+    </g>
     </svg>
 `;
 
-// Set content type to SVG
+// Set content type to SVG and cache headers
 res.setHeader('Content-Type', 'image/svg+xml');
 res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+res.setHeader('Pragma', 'no-cache');
+res.setHeader('Expires', '0');
 
 // Send SVG
 res.status(200).send(svg);
 } catch (error) {
 console.error('Error getting counter:', error);
-res.status(500).json({ error: 'Failed to get counter' });
+// Return a default error badge if something goes wrong
+const errorSvg = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="90" height="20">
+    <rect width="90" height="20" fill="#e05d44"/>
+    <text x="45" y="14" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11" fill="white" text-anchor="middle">error</text>
+    </svg>
+`;
+res.setHeader('Content-Type', 'image/svg+xml');
+res.status(200).send(errorSvg);
 }
 }
