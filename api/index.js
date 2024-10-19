@@ -1,6 +1,6 @@
-import { inject } from "@vercel/analytics"
+// import { inject } from "@vercel/analytics"
 
-inject()
+// inject()
 
 module.exports = async function handler(req, res) {
 res.writeHead(301, {
