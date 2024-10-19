@@ -1,4 +1,5 @@
 import { kv } from '@vercel/kv';
+import { Analytics } from "@vercel/analytics/react"
 
 export default async function handler(req, res) {
 try {
