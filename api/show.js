@@ -1,7 +1,7 @@
 import { kv } from '@vercel/kv';
-// import { inject } from "@vercel/analytics"
-
-// inject()
+import { inject } from '@vercel/analytics';
+ 
+inject();
 
 export default async function handler(req, res) {
 try {
