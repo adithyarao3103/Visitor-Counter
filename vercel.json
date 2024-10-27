@@ -25,6 +25,10 @@
     {
     "src": "/set",
     "dest": "/api/set.js"
+    },
+    {
+    "src": "/add",
+    "dest": "/api/add.js"
     }
 ]
 }
