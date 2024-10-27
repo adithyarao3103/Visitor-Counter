@@ -2,40 +2,29 @@ import { kv } from '@vercel/kv';
 
 // Theme configurations
 const THEMES = {
-default: {
-labelBg: '#444D56',
-countBg: '#007EC6',
-textColor: '#fff',
+neon: {
+labelBg: '#1A1A1A',  // Dark background
+countBg: '#FF00FF',  // Bright magenta
+textColor: '#00FF00', // Bright green
 gradient: true,
-style: 'flat'
+style: 'sharp',
+glowEffect: true     // New property for neon glow
 },
-flat: {
-labelBg: '#555555',
-countBg: '#4C1',
-textColor: '#fff',
-gradient: false,
-style: 'flat'
-},
-plastic: {
-labelBg: '#555555',
-countBg: '#007EC6',
-textColor: '#fff',
+glassmorphic: {
+labelBg: '#ffffff40', // Semi-transparent white
+countBg: '#ffffff20', // More transparent white
+textColor: '#FFFFFF',
 gradient: true,
-style: 'plastic'
+style: 'rounded',
+blur: true           // New property for glass effect
 },
-social: {
-labelBg: '#555555',
-countBg: '#4C71B8',
-textColor: '#fff',
+retro: {
+labelBg: '#FFB74D',  // Warm orange
+countBg: '#B0003A',  // Deep red
+textColor: '#2B2B2B',
 gradient: false,
-style: 'rounded'
-},
-forthebridge: {
-labelBg: '#2F3437',
-countBg: '#66C4DB',
-textColor: '#fff',
-gradient: false,
-style: 'sharp'
+style: 'pixel',      // New style for pixelated edges
+pixelSize: 2         // New property for pixel effect
 }
 };
 
@@ -61,67 +50,91 @@ const totalWidth = labelWidth + countWidth;
 const height = 20;
 
 // Theme-specific styling
-const style = THEMES[theme] || THEMES.default;
-const radius = style.style === 'rounded' ? '10' : style.style === 'sharp' ? '0' : '3';
+const style = THEMES[theme] || THEMES.neon;
+const radius = style.style === 'rounded' ? '10' : 
+            style.style === 'pixel' ? '0' : 
+            style.style === 'sharp' ? '0' : '3';
 
 // Apply custom colors if provided, fallback to theme colors
 const labelBg = customColors.labelBg || style.labelBg;
 const countBg = customColors.countBg || style.countBg;
+const labelTextColor = customColors.textFg || style.textColor;
+const countTextColor = customColors.counterFg || style.textColor;
 
 // Base SVG
 let svg = `
 <svg xmlns="http://www.w3.org/2000/svg" width="${totalWidth}" height="${height}">
 `;
 
+// Add filters for special effects
+if (style.glowEffect) {
+svg += `
+<defs>
+    <filter id="glow">
+    <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
+    <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+    </feMerge>
+    </filter>
+</defs>
+`;
+}
+
+if (style.blur) {
+svg += `
+<defs>
+    <filter id="blur">
+    <feGaussianBlur stdDeviation="1.5" result="blur"/>
+    </filter>
+</defs>
+`;
+}
+
 // Add gradient if theme uses it
 if (style.gradient) {
 svg += `
-    <linearGradient id="b" x2="0" y2="100%">
-    <stop offset="0" stop-color="#bbb" stop-opacity=".1"/>
+<linearGradient id="b" x2="0" y2="100%">
+    <stop offset="0" stop-color="#ffffff" stop-opacity=".2"/>
     <stop offset="1" stop-opacity=".1"/>
-    </linearGradient>
+</linearGradient>
 `;
 }
 
-// Add mask for rounded corners
-if (style.style !== 'sharp') {
+// Add mask for rounded corners or pixel effect
+if (style.style === 'pixel') {
+// Create pixelated edges
+const pixelSize = style.pixelSize || 2;
 svg += `
-    <mask id="a">
+<pattern id="pixel" width="${pixelSize}" height="${pixelSize}" patternUnits="userSpaceOnUse">
+    <rect width="${pixelSize}" height="${pixelSize}" fill="currentColor"/>
+</pattern>
+`;
+} else if (style.style !== 'sharp') {
+svg += `
+<mask id="a">
     <rect width="${totalWidth}" height="${height}" rx="${radius}" fill="#fff"/>
-    </mask>
+</mask>
 `;
 }
 
-// Main shape group
+// Main shape group with special effects
+const filterEffect = style.glowEffect ? 'filter="url(#glow)"' : 
+                    style.blur ? 'filter="url(#blur)"' : '';
+
 svg += `
-<g ${style.style !== 'sharp' ? 'mask="url(#a)"' : ''}>
-    <path fill="${labelBg}" d="M0 0h${labelWidth}v${height}H0z"/>
-    <path fill="${countBg}" d="M${labelWidth} 0h${countWidth}v${height}H${labelWidth}z"/>
-    ${style.gradient ? `<path fill="url(#b)" d="M0 0h${totalWidth}v${height}H0z"/>` : ''}
+<g ${style.style !== 'sharp' ? 'mask="url(#a)"' : ''} ${filterEffect}>
+<path fill="${labelBg}" d="M0 0h${labelWidth}v${height}H0z"/>
+<path fill="${countBg}" d="M${labelWidth} 0h${countWidth}v${height}H${labelWidth}z"/>
+${style.gradient ? `<path fill="url(#b)" d="M0 0h${totalWidth}v${height}H0z"/>` : ''}
 </g>
 `;
 
-// Add plastic effect for plastic theme
-if (style.style === 'plastic') {
+// Text elements with custom colors
 svg += `
-    <g fill="#fff" opacity="0.2">
-    <path d="M0 ${height/2}h${totalWidth}v1H0z"/>
-    </g>
-`;
-}
-
-// Text elements
-svg += `
-<g fill="${style.textColor}" text-anchor="middle" 
-    font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11">
-    ${style.style === 'plastic' ? `
-    <text x="${labelWidth/2}" y="15" fill="#010101" fill-opacity=".3">${labelText}</text>
-    ` : ''}
-    <text x="${labelWidth/2}" y="14">${labelText}</text>
-    ${style.style === 'plastic' ? `
-    <text x="${labelWidth + countWidth/2}" y="15" fill="#010101" fill-opacity=".3">${countText}</text>
-    ` : ''}
-    <text x="${labelWidth + countWidth/2}" y="14">${countText}</text>
+<g text-anchor="middle" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11">
+<text x="${labelWidth/2}" y="14" fill="${labelTextColor}">${labelText}</text>
+<text x="${labelWidth + countWidth/2}" y="14" fill="${countTextColor}">${countText}</text>
 </g>
 `;
 
@@ -135,10 +148,12 @@ export default async function handler(req, res) {
 try {
 const { 
     name = 'visitor_count',
-    theme = 'default',
+    theme = 'neon',
     text = 'Visitors',
-    tb,  // text background color
-    cb   // count background color
+    tb,    // text background color
+    cb,    // count background color
+    tf,    // text foreground color
+    cf     // counter foreground color
 } = req.query;
 
 if (typeof name !== 'string') {
@@ -147,13 +162,15 @@ if (typeof name !== 'string') {
 
 // Validate theme
 if (!THEMES[theme]) {
-    console.warn(`Invalid theme "${theme}" requested, falling back to default`);
+    console.warn(`Invalid theme "${theme}" requested, falling back to neon`);
 }
 
 // Process custom colors
 const customColors = {
     labelBg: formatColor(tb),
-    countBg: formatColor(cb)
+    countBg: formatColor(cb),
+    textFg: formatColor(tf),
+    counterFg: formatColor(cf)
 };
 
 const counterKey = `counter:${name}`;
@@ -165,8 +182,6 @@ if (!exists) {
 
 const count = await kv.get(counterKey) || 0;
 const countText = count.toLocaleString();
-
-// Use the custom text or fallback to default
 const labelText = text || 'Visitors';
 
 const svg = generateSvg(labelText, countText, theme, customColors);
@@ -180,13 +195,12 @@ res.status(200).send(svg);
 } catch (error) {
 console.error('Error getting counter:', error);
 
-// Simple error badge
 const errorSvg = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="90" height="20">
+<svg xmlns="http://www.w3.org/2000/svg" width="90" height="20">
     <rect width="90" height="20" rx="3" fill="#E5534B"/>
     <text x="45" y="14" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" 
-            font-size="11" fill="white" text-anchor="middle">error</text>
-    </svg>
+        font-size="11" fill="white" text-anchor="middle">error</text>
+</svg>
 `;
 
 res.setHeader('Content-Type', 'image/svg+xml');
