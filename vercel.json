@@ -35,8 +35,8 @@
     "dest": "/api/remove.js"
     },
     {
-    "src": "/home",
-    "dest": "/api/dashbpard.js"
+    "src": "/dashboard",
+    "dest": "/api/dashboard.js"
     }
 ]
 }
