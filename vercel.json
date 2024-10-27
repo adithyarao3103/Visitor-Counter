@@ -29,7 +29,7 @@
     {
     "src": "/add",
     "dest": "/api/add.js"
-    }
+    },
     {
     "src": "/remove",
     "dest": "/api/remove.js"
