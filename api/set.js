@@ -12,9 +12,10 @@ const commonStyles = `
             background-color: #ff9a41;
             border-radius: 4px;
             margin: 20px;
-            width: 90vw;
+            width: 100vw;
             text-align: center;
             font-size: 1.2em;
+            font-weight: bold;
         }
         .result-box {
             font-family: Arial, sans-serif;
@@ -23,7 +24,7 @@ const commonStyles = `
             background-color: #50cc50;
             border-radius: 4px;
             margin: 20px;
-            width: 90vw;
+            width: 100vw;
             text-align: center;
         }
         .counter-name {
