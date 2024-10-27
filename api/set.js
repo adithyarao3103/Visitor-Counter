@@ -1,4 +1,5 @@
 import { kv } from '@vercel/kv';
+import crypto from 'crypto';
 
 export default async function handler(req, res) {
 try {
@@ -11,7 +12,24 @@ if (req.method === 'OPTIONS') {
     return;
 }
 
-const { name = 'visitor_count', value } = req.query;
+const { name = 'visitor_count', value, password } = req.query;
+
+if (!password) {
+    res.status(401).json({ error: 'Password is required' });
+    return;
+}
+
+const hashedPassword = crypto
+    .createHash('sha256')
+    .update(password)
+    .digest('hex');
+
+const correctPasswordHash = process.env.ADMIN_PASSWORD_HASH;
+
+if (!correctPasswordHash || hashedPassword !== correctPasswordHash) {
+    res.status(401).json({ error: 'Invalid password' });
+    return;
+}
 
 if (typeof name !== 'string') {
     res.status(400).json({ error: 'Invalid counter name' });
