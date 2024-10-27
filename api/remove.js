@@ -12,10 +12,27 @@ if (req.method === 'OPTIONS') {
     return;
 }
 
-const { name } = req.query;
+const { name, password } = req.query;
 
 if (!name || typeof name !== 'string') {
     res.status(400).json({ error: 'Valid counter name is required' });
+    return;
+}
+
+if (!password) {
+    res.status(401).json({ error: 'Password is required' });
+    return;
+}
+
+const hashedPassword = crypto
+    .createHash('sha256')
+    .update(password)
+    .digest('hex');
+
+const correctPasswordHash = process.env.ADMIN_PASSWORD_HASH;
+
+if (!correctPasswordHash || hashedPassword !== correctPasswordHash) {
+    res.status(401).json({ error: 'Invalid password' });
     return;
 }
 
