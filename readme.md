@@ -7,7 +7,7 @@ Presents the following routes:
 - `/add?name=name&password=password`: Adds a new counter by the name `name`.
 - `/increment?name=name`: Increments the counter `name` by 1.
 - `/show?name=name`: Returns a svg displaying the current count.
-- `/set?value=value&password=password`: Sets the counter to `value`.
+- `/set?name=name&value=value&password=password`: Sets the counter to `value`.
 - `/remove?name=name&password=password`: Deletes the counter `name`.
 - `/`: Redirects to this GitHub page.
 
