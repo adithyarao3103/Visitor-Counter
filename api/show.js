@@ -10,6 +10,11 @@ if (typeof name !== 'string') {
 }
 
 const counterKey = `counter:${name}`;
+const exists = await kv.exists(counterKey);
+if (!exists) {
+    res.status(404).json({ error: 'Counter not found. Create it first using the /add endpoint.' });
+    return;
+}
 const count = await kv.get(counterKey) || 0;
 
 const labelText = 'Visitors'; 
