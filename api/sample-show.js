@@ -1,5 +1,3 @@
-import { kv } from '@vercel/kv';
-
 // Theme configurations
 const THEMES = {
 default: {
