@@ -17,35 +17,35 @@ It also presents the following themes:
 
 #### Default
 
-![default](https://visitor-counter-adithyarao3103.vercel.app/show?name=test-counter)
+![default](https://visitor-counter-adithyarao3103.vercel.app/sample-show)
 
 #### `&theme=neon`
 
-![default](https://visitor-counter-adithyarao3103.vercel.app/show?name=test-counter&theme=neon)
+![default](https://visitor-counter-adithyarao3103.vercel.app/sample-show?theme=neon)
 
 #### `&theme=glassmorphic`
 
-![default](https://visitor-counter-adithyarao3103.vercel.app/show?name=test-counter&theme=glassmorphic)
+![default](https://visitor-counter-adithyarao3103.vercel.app/sample-show?theme=glassmorphic)
 
 #### `&theme=retro`
 
-![default](https://visitor-counter-adithyarao3103.vercel.app/show?name=test-counter&theme=retro)
+![default](https://visitor-counter-adithyarao3103.vercel.app/sample-show?theme=retro)
 
 Further, there are customization queries `tb` and `cb` to change the background of text and counter colors respectively, and `tf` and `cf` to change the font-color of text and counter respectively.
 
 #### `&theme=default&tb=0d1117&cb=4493f8`
 
-![default](https://visitor-counter-adithyarao3103.vercel.app/show?name=test-counter&theme=default&tb=0d1117&cb=4493f8)
+![default](https://visitor-counter-adithyarao3103.vercel.app/sample-show?theme=default&tb=0d1117&cb=4493f8)
 
 #### `&theme=default&tb=0d1117&&cb=4493f8&tf=4493f8&cf=0d1117`
 
-![default](https://visitor-counter-adithyarao3103.vercel.app/show?name=test-counter&theme=default&tb=0d1117&cb=4493f8&tf=4493f8&cf=0d1117)
+![default](https://visitor-counter-adithyarao3103.vercel.app/sample-show?theme=default&tb=0d1117&cb=4493f8&tf=4493f8&cf=0d1117)
 
 You can also change the text on the SVG by using the `text` query.
 
 #### `&text=Custom%20Text`
 
-![default](https://visitor-counter-adithyarao3103.vercel.app/show?name=test-counter&theme=default&text=Custom%20Text)
+![default](https://visitor-counter-adithyarao3103.vercel.app/sample-show?theme=default&text=Custom%20Text)
 
 ### `/increment?name=countername`
 
