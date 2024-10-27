@@ -2,7 +2,7 @@
 
 Simple Visitor Counter for Static Website.
 
-## Presents the following routes:
+## Presents the following routes
 
 ### `/dashboard`
 
@@ -13,9 +13,9 @@ Presents the following dashboard (password protected) to create and manage count
 ### `/show?name=countername`
 
 Returns a svg displaying the current count of counter `countername`.
-It also presents the following themes: 
+It also presents the following themes:
 
-#### Default 
+#### Default
 
 ![default](https://visitor-counter-adithyarao3103.vercel.app/show?name=test-counter)
 
@@ -62,7 +62,7 @@ Use this route in a hidden iframe if you want to only increment the counter and 
 
 3. On your profile dashboard, go to `Settings>Environment Variables` and add Key:`ADMIN_PASSWORD_HASH`, Value: sha256 hash of your password (get the hash from [here](https://emn178.github.io/online-tools/sha256.html)). Connect it to the project deployment.
 
-4. Redeploy the project to ensure all the environment variables are correctly connected. 
+4. Redeploy the project to ensure all the environment variables are correctly connected.  
 
 5. Once deployed, visit the `/dashboard` route to access your dashboard to create and update counters
 
