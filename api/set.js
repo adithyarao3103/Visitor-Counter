@@ -2,8 +2,8 @@ import { kv } from '@vercel/kv';
 import crypto from 'crypto';
 
 export default async function handler(req, res) {
-// Common styles and HTML template
-const commonStyles = `
+
+    const commonStyles = `
     <style>
         .error-box {
             font-family: Arial, sans-serif;
@@ -12,7 +12,7 @@ const commonStyles = `
             background-color: #ff9a41;
             border-radius: 4px;
             margin: 20px;
-            width: calc(100vw - 80px);
+            width: calc(100vw - 85px);
             text-align: center;
             font-size: 1.2em;
             font-weight: bold;
@@ -24,7 +24,7 @@ const commonStyles = `
             background-color: #50cc50;
             border-radius: 4px;
             margin: 20px;
-            width: calc(100vw - 80px);
+            width: calc(100vw - 85px);
             text-align: center;
         }
         .counter-name {
