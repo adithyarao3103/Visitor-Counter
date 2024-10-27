@@ -5,10 +5,12 @@ This project deployed on vercel presents a simple visitor counter.
 > [!Important]
 > Each vercel deployment will have one single variable to store the value of the counter. Using it on multiple sites will lead to every site incrementing a single counter, which is not the intended behavior.
 
-This presents two routes:
+This presents the following routes:
 
 - `/increment`: Increments the counter by 1.
 - `/show`: Returns a svg displaying the current count.
+- `/set?value=val`: Sets the counter to `val`.
+- `/`: Redirects to this GitHub page.
 
 To use on your static website,
 
