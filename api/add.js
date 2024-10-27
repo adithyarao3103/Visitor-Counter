@@ -12,30 +12,31 @@ if (req.method === 'OPTIONS') {
     return;
 }
 
-const { name = 'visitor_count' } = req.query;
+const { name } = req.query;
 
-if (typeof name !== 'string') {
-    res.status(400).json({ error: 'Invalid counter name' });
+if (!name || typeof name !== 'string') {
+    res.status(400).json({ error: 'Valid counter name is required' });
     return;
 }
 
 const counterKey = `counter:${name}`;
-
 const exists = await kv.exists(counterKey);
-if (!exists) {
-    res.status(404).json({ error: 'Counter not found. Create it first using the /add endpoint.' });
+
+if (exists) {
+    res.status(409).json({ error: 'Counter with this name already exists' });
     return;
 }
 
-const count = await kv.incr(counterKey);
+await kv.set(counterKey, 0);
 
-res.status(200).json({
+res.status(200).json({ 
+    message: 'Counter created successfully',
     name: name,
-    value: count
+    value: 0 
 });
 
 } catch (error) {
-console.error('Error incrementing counter:', error);
-res.status(500).json({ error: 'Failed to increment counter' });
+console.error('Error creating counter:', error);
+res.status(500).json({ error: 'Failed to create counter' });
 }
 }
