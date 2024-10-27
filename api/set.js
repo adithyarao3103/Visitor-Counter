@@ -2,127 +2,66 @@ import { kv } from '@vercel/kv';
 import crypto from 'crypto';
 
 export default async function handler(req, res) {
+    try {
+        // Set CORS headers
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
-    const commonStyles = `
-    <style>
-        .error-box {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            border: 1px solid #ff4444;
-            background-color: #ff9a41;
-            border-radius: 4px;
-            margin: 20px;
-            width: calc(100vw - 85px);
-            text-align: center;
-            font-size: 1.2em;
-            font-weight: bold;
+        if (req.method === 'OPTIONS') {
+            res.status(200).end();
+            return;
         }
-        .result-box {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            border: 1px solid #44aa44;
-            background-color: #50cc50;
-            border-radius: 4px;
-            margin: 20px;
-            width: calc(100vw - 85px);
-            text-align: center;
+
+        if (req.method !== 'POST') {
+            return res.status(405).json({ error: 'Method not allowed' });
         }
-        .counter-name {
-            font-size: 1.2em;
-            font-weight: bold;
-            color: black;
+
+        // Get authorization token
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return res.status(401).json({ error: 'Authorization required' });
         }
-        .counter-value {
-            font-size: 1.2em;
-            color: black;
-            margin-top: 10px;
+
+        const sessionToken = authHeader.split(' ')[1];
+        const sessionHash = await kv.get(`session:${sessionToken}`);
+        
+        if (!sessionHash) {
+            return res.status(401).json({ error: 'Invalid or expired session' });
         }
-    </style>
-`;
 
-const renderHtml = (content, isError = true) => `
-    <html>
-        <head>
-            ${commonStyles}
-        </head>
-        <body>
-            <div class="${isError ? 'error-box' : 'result-box'}">
-                ${content}
-            </div>
-        </body>
-    </html>
-`;
+        const { name, value } = req.body;
 
-try {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+        if (!name || typeof name !== 'string') {
+            return res.status(400).json({ error: 'Valid counter name is required' });
+        }
 
-    if (req.method === 'OPTIONS') {
-        res.status(200).end();
-        return;
+        const newValue = parseInt(value);
+        if (isNaN(newValue)) {
+            return res.status(400).json({ error: 'Invalid value provided. Must be a number.' });
+        }
+
+        if (newValue < 0) {
+            return res.status(400).json({ error: 'Value must be non-negative.' });
+        }
+
+        const counterKey = `counter:${name}`;
+        const exists = await kv.exists(counterKey);
+
+        if (!exists) {
+            return res.status(404).json({ error: 'Counter not found' });
+        }
+
+        await kv.set(counterKey, newValue);
+
+        return res.status(200).json({ 
+            message: 'Counter updated successfully',
+            name: name,
+            value: newValue 
+        });
+
+    } catch (error) {
+        console.error('Error setting counter:', error);
+        return res.status(500).json({ error: 'Failed to set counter' });
     }
-
-    const { name = 'visitor_count', value, password } = req.query;
-
-    if (!password) {
-        res.setHeader('Content-Type', 'text/html');
-        res.status(401).send(renderHtml('Password is required'));
-        return;
-    }
-
-    const hashedPassword = crypto
-        .createHash('sha256')
-        .update(password)
-        .digest('hex');
-
-    const correctPasswordHash = process.env.ADMIN_PASSWORD_HASH;
-
-    if (!correctPasswordHash || hashedPassword !== correctPasswordHash) {
-        res.setHeader('Content-Type', 'text/html');
-        res.status(401).send(renderHtml('Invalid password'));
-        return;
-    }
-
-    if (typeof name !== 'string') {
-        res.setHeader('Content-Type', 'text/html');
-        res.status(400).send(renderHtml('Invalid counter name'));
-        return;
-    }
-
-    const newValue = parseInt(value);
-    if (isNaN(newValue)) {
-        res.setHeader('Content-Type', 'text/html');
-        res.status(400).send(renderHtml('Invalid value provided. Must be a number.'));
-        return;
-    }
-
-    if (newValue < 0) {
-        res.setHeader('Content-Type', 'text/html');
-        res.status(400).send(renderHtml('Value must be non-negative.'));
-        return;
-    }
-
-    const counterKey = `counter:${name}`;
-
-    const exists = await kv.exists(counterKey);
-    if (!exists) {
-        res.setHeader('Content-Type', 'text/html');
-        res.status(404).send(renderHtml('Counter not found. Create it first using the /add endpoint.'));
-        return;
-    }
-
-    await kv.set(counterKey, newValue);
-
-    res.setHeader('Content-Type', 'text/html');
-    res.status(200).send(renderHtml(`
-        <div class="counter-name">Counter: ${name}</div>
-        <div class="counter-value">Value: ${newValue}</div>
-    `, false));
-
-} catch (error) {
-    console.error('Error setting counter:', error);
-    res.setHeader('Content-Type', 'text/html');
-    res.status(500).send(renderHtml('Failed to set counter'));
-}
 }
