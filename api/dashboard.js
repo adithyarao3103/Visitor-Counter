@@ -123,6 +123,7 @@ export default async function handler(req, res) {
                             const response = await fetch('/set?name=' + name + '&value=' + value '&password=' + password, {
                                 method: 'POST'
                             });
+                            console.log(response);
                             if (response.ok) {
                                 window.location.reload();
                             } else {
