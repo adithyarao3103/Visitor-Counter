@@ -2,6 +2,13 @@ import { kv } from '@vercel/kv';
 
 // Theme configurations
 const THEMES = {
+default: {
+labelBg: '#444D56',
+countBg: '#007EC6',
+textColor: '#fff',
+gradient: true,
+style: 'flat'
+},
 neon: {
 labelBg: '#1A1A1A',  // Dark background
 countBg: '#FF00FF',  // Bright magenta
@@ -50,7 +57,7 @@ const totalWidth = labelWidth + countWidth;
 const height = 20;
 
 // Theme-specific styling
-const style = THEMES[theme] || THEMES.neon;
+const style = THEMES[theme] || THEMES.default;
 const radius = style.style === 'rounded' ? '10' : 
             style.style === 'pixel' ? '0' : 
             style.style === 'sharp' ? '0' : '3';
@@ -93,12 +100,21 @@ svg += `
 
 // Add gradient if theme uses it
 if (style.gradient) {
-svg += `
-<linearGradient id="b" x2="0" y2="100%">
+if (theme === 'default') {
+    svg += `
+    <linearGradient id="b" x2="0" y2="100%">
+    <stop offset="0" stop-color="#bbb" stop-opacity=".1"/>
+    <stop offset="1" stop-opacity=".1"/>
+    </linearGradient>
+    `;
+} else {
+    svg += `
+    <linearGradient id="b" x2="0" y2="100%">
     <stop offset="0" stop-color="#ffffff" stop-opacity=".2"/>
     <stop offset="1" stop-opacity=".1"/>
-</linearGradient>
-`;
+    </linearGradient>
+    `;
+}
 }
 
 // Add mask for rounded corners or pixel effect
@@ -148,7 +164,7 @@ export default async function handler(req, res) {
 try {
 const { 
     name = 'visitor_count',
-    theme = 'neon',
+    theme = 'default',
     text = 'Visitors',
     tb,    // text background color
     cb,    // count background color
@@ -162,7 +178,7 @@ if (typeof name !== 'string') {
 
 // Validate theme
 if (!THEMES[theme]) {
-    console.warn(`Invalid theme "${theme}" requested, falling back to neon`);
+    console.warn(`Invalid theme "${theme}" requested, falling back to default`);
 }
 
 // Process custom colors
