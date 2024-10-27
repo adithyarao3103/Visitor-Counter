@@ -33,6 +33,10 @@
     {
     "src": "/remove",
     "dest": "/api/remove.js"
+    },
+    {
+    "src": "/home",
+    "dest": "/api/dashbpard.js"
     }
 ]
 }
