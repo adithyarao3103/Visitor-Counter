@@ -3,8 +3,7 @@ import crypto from 'crypto';
 
 export default async function handler(req, res) {
 
-    
-const commonStyles = `
+    const commonStyles = `
     <style>
         .error-box {
             font-family: Arial, sans-serif;
@@ -55,64 +54,64 @@ const renderHtml = (content, isError = true) => `
 `;
 
 try {
-res.setHeader('Access-Control-Allow-Origin', '*');
-res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type,authorization');
+    // Set CORS headers
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type,authorization');
 
-if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
-}
+    if (req.method === 'OPTIONS') {
+        res.status(200).end();
+        return;
+    }
 
-const { name, password } = req.query;
+    const { name, password } = req.query;
 
-if (!password) {
+    if (!name || typeof name !== 'string') {
+        res.setHeader('Content-Type', 'text/html');
+        res.status(400).send(renderHtml('Valid counter name is required'));
+        return;
+    }
+
+    if (!password) {
+        res.setHeader('Content-Type', 'text/html');
+        res.status(401).send(renderHtml('Password is required'));
+        return;
+    }
+
+    const hashedPassword = crypto
+        .createHash('sha256')
+        .update(password)
+        .digest('hex');
+
+    const correctPasswordHash = process.env.ADMIN_PASSWORD_HASH;
+
+    if (!correctPasswordHash || hashedPassword !== correctPasswordHash) {
+        res.setHeader('Content-Type', 'text/html');
+        res.status(401).send(renderHtml('Invalid password'));
+        return;
+    }
+
+    const counterKey = `counter:${name}`;
+    const exists = await kv.exists(counterKey);
+
+    if (exists) {
+        res.setHeader('Content-Type', 'text/html');
+        res.status(409).send(renderHtml('Counter with this name already exists'));
+        return;
+    }
+
+    await kv.set(counterKey, 0);
+
     res.setHeader('Content-Type', 'text/html');
-    res.status(401).send(renderHtml('Password is required' ));
-    return;
-}
-
-
-const hashedPassword = crypto
-    .createHash('sha256')
-    .update(password)
-    .digest('hex');
-
-const correctPasswordHash = process.env.ADMIN_PASSWORD_HASH;
-
-if (!correctPasswordHash || hashedPassword !== correctPasswordHash) {
-    res.setHeader('Content-Type', 'text/html');
-    res.status(401).send(renderHtml('Invalid password'));
-    return;
-}
-
-
-if (!name || typeof name !== 'string') {
-    res.setHeader('Content-Type', 'text/html');
-    res.status(400).send(renderHtml('Valid counter name is required'));
-    return;
-}
-
-const counterKey = `counter:${name}`;
-const exists = await kv.exists(counterKey);
-
-if (exists) {
-    res.setHeader('Content-Type', 'text/html');
-    res.status(400).send(renderHtml('Counter with this name already exists'));
-    return;
-}
-
-await kv.set(counterKey, 0);
-
-res.setHeader('Content-Type', 'text/html');
     res.status(200).send(renderHtml(`
-        <div class="counter-name">Counter: ${name} created successfully with</div>
-        <div class="counter-value">Value: ${newValue}</div>
-    `, false))
+        <div class="message">Counter created successfully</div>
+        <div class="counter-name">Counter: ${name}</div>
+        <div class="counter-value">Initial Value: 0</div>
+    `, false));
 
 } catch (error) {
-console.error('Error creating counter:', error);
-res.setHeader('Content-Type', 'text/html');
-res.status(500).send(renderHtml('Failed to create counter'));
+    console.error('Error creating counter:', error);
+    res.setHeader('Content-Type', 'text/html');
+    res.status(500).send(renderHtml('Failed to create counter'));
 }
 }
