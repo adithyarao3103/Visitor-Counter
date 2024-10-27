@@ -4,7 +4,7 @@ Simple Visitor Counter for Static Website.
 
 Presents the following routes:
 
-- `/add?name=name&password=password`{.:language-ruby}: Adds a new counter by the name `name`.
+- `/add?name=name&password=password`{:.language-ruby}: Adds a new counter by the name `name`.
 - `/increment?name=name`: Increments the counter `name` by 1.
 - `/show?name=name`: Returns a svg displaying the current count.
 - `/set?name=name&value=value&password=password`: Sets the counter to `value`.
