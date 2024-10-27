@@ -12,7 +12,7 @@ if (typeof name !== 'string') {
 const counterKey = `counter:${name}`;
 const count = await kv.get(counterKey) || 0;
 
-const labelText = name.replace(/_/g, ' '); 
+const labelText = 'Visitors'; 
 const countText = count.toLocaleString();
 const labelWidth = labelText.length * 6.5 + 10;
 const countWidth = countText.length * 7.5 + 10;
