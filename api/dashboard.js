@@ -97,7 +97,7 @@ export default async function handler(req, res) {
         </html>
     `;
 
-    const renderDashboard = async (sessionToken) => {
+    const renderDashboard = async (password) => {
         // Get all counter keys
         const keys = await kv.keys('counter:*');
         const counters = [];
@@ -116,17 +116,12 @@ export default async function handler(req, res) {
                 <head>
                     ${commonStyles}
                     <script>
-                        const sessionToken = '${sessionToken}';
+                        const password = '${password}';
 
                         async function updateCounter(name) {
                             const value = document.getElementById('value-' + name).value;
-                            const response = await fetch('/api/set', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'Authorization': 'Bearer ' + sessionToken
-                                },
-                                body: JSON.stringify({ name, value })
+                            const response = await fetch('/set?name=' + name + '&value=' + value '&password=' + password, {
+                                method: 'POST'
                             });
                             if (response.ok) {
                                 window.location.reload();
@@ -137,13 +132,8 @@ export default async function handler(req, res) {
 
                         async function deleteCounter(name) {
                             if (!confirm('Are you sure you want to delete this counter?')) return;
-                            const response = await fetch('/api/delete', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'Authorization': 'Bearer ' + sessionToken
-                                },
-                                body: JSON.stringify({ name })
+                            const response = await fetch('/remove?name=' + name + '&password=' + password, {
+                                method: 'POST'
                             });
                             if (response.ok) {
                                 window.location.reload();
@@ -154,13 +144,8 @@ export default async function handler(req, res) {
 
                         async function addCounter() {
                             const name = document.getElementById('new-counter-name').value;
-                            const response = await fetch('/api/add', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'Authorization': 'Bearer ' + sessionToken
-                                },
-                                body: JSON.stringify({ name })
+                            const response = await fetch('/add?name=' + name + '&password=' + password, {
+                                method: 'POST'
                             });
                             if (response.ok) {
                                 window.location.reload();
@@ -223,15 +208,15 @@ export default async function handler(req, res) {
                 return res.send(renderLoginPage('Invalid password'));
             }
 
-            // Create a session token
-            const sessionToken = crypto.randomBytes(32).toString('hex');
+            // // Create a session token
+            // const sessionToken = crypto.randomBytes(32).toString('hex');
             
-            // Store the session token (you might want to store this in KV with an expiration)
-            await kv.set(`session:${sessionToken}`, hashedPassword, { ex: 3600 }); // Expires in 1 hour
+            // // Store the session token (you might want to store this in KV with an expiration)
+            // await kv.set(`session:${sessionToken}`, hashedPassword, { ex: 3600 }); // Expires in 1 hour
 
             // If password is correct, show dashboard
             res.setHeader('Content-Type', 'text/html');
-            res.send(await renderDashboard(sessionToken));
+            res.send(await renderDashboard(password));
         }
 
     } catch (error) {

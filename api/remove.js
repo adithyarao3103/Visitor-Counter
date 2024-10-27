@@ -2,56 +2,64 @@ import { kv } from '@vercel/kv';
 import crypto from 'crypto';
 
 export default async function handler(req, res) {
-    try {
-        // Set CORS headers
-        res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+try {
 
-        if (req.method === 'OPTIONS') {
-            res.status(200).end();
-            return;
-        }
+    res.setHeader('Access-Control-Allow-Origin', '*');
+res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
 
-        if (req.method !== 'POST') {
-            return res.status(405).json({ error: 'Method not allowed' });
-        }
+if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+}
 
-        // Get authorization token
-        const authHeader = req.headers.authorization;
-        if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            return res.status(401).json({ error: 'Authorization required' });
-        }
 
-        const sessionToken = authHeader.split(' ')[1];
-        const sessionHash = await kv.get(`session:${sessionToken}`);
-        
-        if (!sessionHash) {
-            return res.status(401).json({ error: 'Invalid or expired session' });
-        }
+const { name, password } = req.query;
 
-        const { name } = req.body;
+if (!name || typeof name !== 'string') {
+    res.status(400).json({ error: 'Valid counter name is required' });
+    return;
+}
 
-        if (!name || typeof name !== 'string') {
-            return res.status(400).json({ error: 'Valid counter name is required' });
-        }
+if (!password) {
+    res.status(401).json({ error: 'Password is required' });
+    return;
+}
 
-        const counterKey = `counter:${name}`;
-        const exists = await kv.exists(counterKey);
+const hashedPassword = crypto
+    .createHash('sha256')
+    .update(password)
+    .digest('hex');
 
-        if (!exists) {
-            return res.status(404).json({ error: 'Counter not found' });
-        }
+const correctPasswordHash = process.env.ADMIN_PASSWORD_HASH;
 
-        await kv.del(counterKey);
+if (!correctPasswordHash || hashedPassword !== correctPasswordHash) {
+    res.status(401).json({ error: 'Invalid password' });
+    return;
+}
 
-        return res.status(200).json({ 
-            message: 'Counter deleted successfully',
-            name: name
-        });
+if (name === 'visitor_count') {
+    res.status(403).json({ error: 'Cannot remove default visitor counter' });
+    return;
+}
 
-    } catch (error) {
-        console.error('Error deleting counter:', error);
-        return res.status(500).json({ error: 'Failed to delete counter' });
-    }
+const counterKey = `counter:${name}`;
+
+const exists = await kv.exists(counterKey);
+if (!exists) {
+    res.status(404).json({ error: 'Counter not found' });
+    return;
+}
+
+await kv.del(counterKey);
+
+res.status(200).json({ 
+    message: 'Counter removed successfully',
+    name: name
+});
+
+} catch (error) {
+console.error('Error removing counter:', error);
+res.status(500).json({ error: 'Failed to remove counter' });
+}
 }
