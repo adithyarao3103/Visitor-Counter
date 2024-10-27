@@ -120,7 +120,7 @@ export default async function handler(req, res) {
 
                         async function updateCounter(name) {
                             const value = document.getElementById('value-' + name).value;
-                            const response = await fetch('/set?name=' + name + '&value=' + value '&password=' + password, {
+                            const response = await fetch('/set?name=' + name + '&value=' + value + '&password=' + password, {
                                 method: 'POST'
                             });
                             console.log(response);
