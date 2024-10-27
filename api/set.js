@@ -9,17 +9,19 @@ const commonStyles = `
             font-family: Arial, sans-serif;
             padding: 20px;
             border: 1px solid #ff4444;
-            background-color: #ffeeee;
+            background-color: #ff4444;
             border-radius: 4px;
             margin: 20px;
+            width: fit-content;
         }
         .result-box {
             font-family: Arial, sans-serif;
             padding: 20px;
             border: 1px solid #44aa44;
-            background-color: #eeffee;
+            background-color: #44aa44;
             border-radius: 4px;
             margin: 20px;
+            width: fit-content;
         }
         .counter-name {
             font-weight: bold;
