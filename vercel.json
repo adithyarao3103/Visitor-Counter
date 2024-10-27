@@ -21,6 +21,10 @@
     {
     "src": "/show",
     "dest": "/api/show.js"
+    },
+    {
+    "src": "/set",
+    "dest": "/api/set.js"
     }
 ]
 }
