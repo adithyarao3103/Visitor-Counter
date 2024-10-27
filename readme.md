@@ -45,7 +45,7 @@ You can also change the text on the SVG by using the `text` query.
 
 #### `&text=Custom%20Text`
 
-![default](https://visitor-counter-adithyarao3103.vercel.app/show?name=test-counter&theme=defaul&text=Custom%20Text)
+![default](https://visitor-counter-adithyarao3103.vercel.app/show?name=test-counter&theme=default&text=Custom%20Text)
 
 ### `/increment?name=countername`
 
