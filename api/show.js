@@ -39,7 +39,22 @@ style: 'sharp'
 }
 };
 
-function generateSvg(labelText, countText, theme) {
+// Validate hex color code
+function isValidHexColor(color) {
+return /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color);
+}
+
+// Ensure color has # prefix
+function formatColor(color) {
+if (!color) return null;
+color = color.trim();
+if (color.charAt(0) !== '#') {
+color = '#' + color;
+}
+return isValidHexColor(color) ? color : null;
+}
+
+function generateSvg(labelText, countText, theme, customColors = {}) {
 const labelWidth = labelText.length * 6.5 + 10;
 const countWidth = countText.length * 7.5 + 10;
 const totalWidth = labelWidth + countWidth;
@@ -48,6 +63,10 @@ const height = 20;
 // Theme-specific styling
 const style = THEMES[theme] || THEMES.default;
 const radius = style.style === 'rounded' ? '10' : style.style === 'sharp' ? '0' : '3';
+
+// Apply custom colors if provided, fallback to theme colors
+const labelBg = customColors.labelBg || style.labelBg;
+const countBg = customColors.countBg || style.countBg;
 
 // Base SVG
 let svg = `
@@ -76,8 +95,8 @@ svg += `
 // Main shape group
 svg += `
 <g ${style.style !== 'sharp' ? 'mask="url(#a)"' : ''}>
-    <path fill="${style.labelBg}" d="M0 0h${labelWidth}v${height}H0z"/>
-    <path fill="${style.countBg}" d="M${labelWidth} 0h${countWidth}v${height}H${labelWidth}z"/>
+    <path fill="${labelBg}" d="M0 0h${labelWidth}v${height}H0z"/>
+    <path fill="${countBg}" d="M${labelWidth} 0h${countWidth}v${height}H${labelWidth}z"/>
     ${style.gradient ? `<path fill="url(#b)" d="M0 0h${totalWidth}v${height}H0z"/>` : ''}
 </g>
 `;
@@ -114,7 +133,13 @@ return svg;
 
 export default async function handler(req, res) {
 try {
-const { name = 'visitor_count', theme = 'default' } = req.query;
+const { 
+    name = 'visitor_count',
+    theme = 'default',
+    text = 'Visitors',
+    tb,  // text background color
+    cb   // count background color
+} = req.query;
 
 if (typeof name !== 'string') {
     throw new Error('Invalid counter name');
@@ -125,6 +150,12 @@ if (!THEMES[theme]) {
     console.warn(`Invalid theme "${theme}" requested, falling back to default`);
 }
 
+// Process custom colors
+const customColors = {
+    labelBg: formatColor(tb),
+    countBg: formatColor(cb)
+};
+
 const counterKey = `counter:${name}`;
 const exists = await kv.exists(counterKey);
 if (!exists) {
@@ -133,10 +164,12 @@ if (!exists) {
 }
 
 const count = await kv.get(counterKey) || 0;
-const labelText = 'Visitors';
 const countText = count.toLocaleString();
 
-const svg = generateSvg(labelText, countText, theme);
+// Use the custom text or fallback to default
+const labelText = text || 'Visitors';
+
+const svg = generateSvg(labelText, countText, theme, customColors);
 
 res.setHeader('Content-Type', 'image/svg+xml');
 res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
