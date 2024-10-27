@@ -12,6 +12,7 @@ if (req.method === 'OPTIONS') {
     return;
 }
 
+
 const { name, password } = req.query;
 
 if (!name || typeof name !== 'string') {
