@@ -9,10 +9,11 @@ const commonStyles = `
             font-family: Arial, sans-serif;
             padding: 20px;
             border: 1px solid #ff4444;
-            background-color: #ff4444;
+            background-color: #ff8e41;
             border-radius: 4px;
             margin: 20px;
-            width: fit-content;
+            width: 90vw;
+            text-align: center;
         }
         .result-box {
             font-family: Arial, sans-serif;
@@ -21,15 +22,16 @@ const commonStyles = `
             background-color: #44aa44;
             border-radius: 4px;
             margin: 20px;
-            width: fit-content;
+            width: 90vw;
+            text-align: center;
         }
         .counter-name {
             font-weight: bold;
-            color: #2a2a2a;
+            color: black;
         }
         .counter-value {
             font-size: 1.2em;
-            color: #44aa44;
+            color: black;
             margin-top: 10px;
         }
     </style>
