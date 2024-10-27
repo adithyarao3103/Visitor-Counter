@@ -12,7 +12,7 @@ const commonStyles = `
             background-color: #ff9a41;
             border-radius: 4px;
             margin: 20px;
-            width: 100vw;
+            width: calc(100vw - 40px);
             text-align: center;
             font-size: 1.2em;
             font-weight: bold;
@@ -24,7 +24,7 @@ const commonStyles = `
             background-color: #50cc50;
             border-radius: 4px;
             margin: 20px;
-            width: 100vw;
+            width: calc(100vw - 40px);
             text-align: center;
         }
         .counter-name {
