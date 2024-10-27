@@ -237,8 +237,8 @@ export default async function handler(req, res) {
                                     method: 'POST'
                                 });
                                 if (response.ok) {
-                                    window.location.reload();
                                     showAlert('Counter updated successfully');
+                                    window.location.reload();
                                 } else {
                                     showAlert('Failed to update counter', 'error');
                                 }
@@ -254,8 +254,8 @@ export default async function handler(req, res) {
                                         method: 'POST'
                                     });
                                     if (response.ok) {
-                                        window.location.reload();
                                         showAlert('Counter deleted successfully');
+                                        window.location.reload();
                                     } else {
                                         showAlert('Failed to delete counter', 'error');
                                     }
@@ -276,8 +276,8 @@ export default async function handler(req, res) {
                                     method: 'POST'
                                 });
                                 if (response.ok) {
-                                    window.location.reload();
                                     showAlert('Counter created successfully');
+                                    window.location.reload();
                                 } else {
                                     showAlert('Failed to create counter', 'error');
                                 }
