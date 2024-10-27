@@ -40,7 +40,7 @@
     },
     {
     "src": "/sample-show",
-    "dest": "/api/sample-shows.js"
+    "dest": "/api/sample-show.js"
     }
 ]
 }
