@@ -46,6 +46,12 @@ Further, there are customization queries `tb` and `cb` to change the background 
 
 ![default](https://visitor-counter-adithyarao3103.vercel.app/show?name=test-counter&theme=default&tb=0d1117&cb=4493f8&tf=4493f8&cf=0d1117)
 
+You can also change the text on the SVG by using the `text` query.
+
+#### `&text=Custom%20Text`
+
+![default](https://visitor-counter-adithyarao3103.vercel.app/show?name=test-counter&theme=defaul&text=Custom%20Text)
+
 ## How to use
 
 1. Clone this repository and deploy your own instance on Vercel (The project is made to be deployed on Vercel, the free plan is enough).
