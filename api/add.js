@@ -36,6 +36,11 @@ export default async function handler(req, res) {
             font-size: 1.2em;
             color: black;
             margin-top: 10px;
+        } 
+        .message {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            color: #2a2a2a;
         }
     </style>
 `;
