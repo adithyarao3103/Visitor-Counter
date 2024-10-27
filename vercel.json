@@ -37,6 +37,10 @@
     {
     "src": "/dashboard",
     "dest": "/api/dashboard.js"
+    },
+    {
+    "src": "/sample-show",
+    "dest": "/api/sample-shows.js"
     }
 ]
 }
