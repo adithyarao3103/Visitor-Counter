@@ -39,21 +39,12 @@ style: 'sharp'
 }
 };
 
-// Configuration for SVG dimensions
-const SVG_CONFIG = {
-height: 28,                     // Increased height
-fontSize: 14,                   // Increased font size
-textY: 19,                      // Adjusted text Y position
-shadowY: 20,                    // Adjusted shadow Y position
-charWidth: 8.5,                 // Increased character width
-paddingX: 12,                   // Increased horizontal padding
-plasticLineY: 14               // Adjusted plastic effect line position
-};
-
+// Validate hex color code
 function isValidHexColor(color) {
 return /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color);
 }
 
+// Ensure color has # prefix
 function formatColor(color) {
 if (!color) return null;
 color = color.trim();
@@ -64,21 +55,25 @@ return isValidHexColor(color) ? color : null;
 }
 
 function generateSvg(labelText, countText, theme, customColors = {}) {
-const labelWidth = labelText.length * SVG_CONFIG.charWidth + SVG_CONFIG.paddingX * 2;
-const countWidth = countText.length * SVG_CONFIG.charWidth + SVG_CONFIG.paddingX * 2;
+const labelWidth = labelText.length * 6.5 + 10;
+const countWidth = countText.length * 7.5 + 10;
 const totalWidth = labelWidth + countWidth;
-const height = SVG_CONFIG.height;
+const height = 20;
 
+// Theme-specific styling
 const style = THEMES[theme] || THEMES.default;
-const radius = style.style === 'rounded' ? '14' : style.style === 'sharp' ? '0' : '4';
+const radius = style.style === 'rounded' ? '10' : style.style === 'sharp' ? '0' : '3';
 
+// Apply custom colors if provided, fallback to theme colors
 const labelBg = customColors.labelBg || style.labelBg;
 const countBg = customColors.countBg || style.countBg;
 
+// Base SVG
 let svg = `
 <svg xmlns="http://www.w3.org/2000/svg" width="${totalWidth}" height="${height}">
 `;
 
+// Add gradient if theme uses it
 if (style.gradient) {
 svg += `
     <linearGradient id="b" x2="0" y2="100%">
@@ -88,6 +83,7 @@ svg += `
 `;
 }
 
+// Add mask for rounded corners
 if (style.style !== 'sharp') {
 svg += `
     <mask id="a">
@@ -96,6 +92,7 @@ svg += `
 `;
 }
 
+// Main shape group
 svg += `
 <g ${style.style !== 'sharp' ? 'mask="url(#a)"' : ''}>
     <path fill="${labelBg}" d="M0 0h${labelWidth}v${height}H0z"/>
@@ -104,28 +101,31 @@ svg += `
 </g>
 `;
 
+// Add plastic effect for plastic theme
 if (style.style === 'plastic') {
 svg += `
     <g fill="#fff" opacity="0.2">
-    <path d="M0 ${SVG_CONFIG.plasticLineY}h${totalWidth}v1.5H0z"/>
+    <path d="M0 ${height/2}h${totalWidth}v1H0z"/>
     </g>
 `;
 }
 
+// Text elements
 svg += `
 <g fill="${style.textColor}" text-anchor="middle" 
-    font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="${SVG_CONFIG.fontSize}">
+    font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11">
     ${style.style === 'plastic' ? `
-    <text x="${labelWidth/2}" y="${SVG_CONFIG.shadowY}" fill="#010101" fill-opacity=".3">${labelText}</text>
+    <text x="${labelWidth/2}" y="15" fill="#010101" fill-opacity=".3">${labelText}</text>
     ` : ''}
-    <text x="${labelWidth/2}" y="${SVG_CONFIG.textY}">${labelText}</text>
+    <text x="${labelWidth/2}" y="14">${labelText}</text>
     ${style.style === 'plastic' ? `
-    <text x="${labelWidth + countWidth/2}" y="${SVG_CONFIG.shadowY}" fill="#010101" fill-opacity=".3">${countText}</text>
+    <text x="${labelWidth + countWidth/2}" y="15" fill="#010101" fill-opacity=".3">${countText}</text>
     ` : ''}
-    <text x="${labelWidth + countWidth/2}" y="${SVG_CONFIG.textY}">${countText}</text>
+    <text x="${labelWidth + countWidth/2}" y="14">${countText}</text>
 </g>
 `;
 
+// Close SVG tag
 svg += `</svg>`;
 
 return svg;
@@ -137,18 +137,20 @@ const {
     name = 'visitor_count',
     theme = 'default',
     text = 'Visitors',
-    tb,
-    cb
+    tb,  // text background color
+    cb   // count background color
 } = req.query;
 
 if (typeof name !== 'string') {
     throw new Error('Invalid counter name');
 }
 
+// Validate theme
 if (!THEMES[theme]) {
     console.warn(`Invalid theme "${theme}" requested, falling back to default`);
 }
 
+// Process custom colors
 const customColors = {
     labelBg: formatColor(tb),
     countBg: formatColor(cb)
@@ -163,6 +165,8 @@ if (!exists) {
 
 const count = await kv.get(counterKey) || 0;
 const countText = count.toLocaleString();
+
+// Use the custom text or fallback to default
 const labelText = text || 'Visitors';
 
 const svg = generateSvg(labelText, countText, theme, customColors);
@@ -176,11 +180,12 @@ res.status(200).send(svg);
 } catch (error) {
 console.error('Error getting counter:', error);
 
+// Simple error badge
 const errorSvg = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="120" height="${SVG_CONFIG.height}">
-    <rect width="120" height="${SVG_CONFIG.height}" rx="4" fill="#E5534B"/>
-    <text x="60" y="${SVG_CONFIG.textY}" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" 
-            font-size="${SVG_CONFIG.fontSize}" fill="white" text-anchor="middle">error</text>
+    <svg xmlns="http://www.w3.org/2000/svg" width="90" height="20">
+    <rect width="90" height="20" rx="3" fill="#E5534B"/>
+    <text x="45" y="14" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" 
+            font-size="11" fill="white" text-anchor="middle">error</text>
     </svg>
 `;
 
