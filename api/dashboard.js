@@ -4,121 +4,157 @@ import crypto from 'crypto';
 export default async function handler(req, res) {
     const commonStyles = `
         <style>
+            /* Base styles */
             body {
                 font-family: Arial, sans-serif;
                 line-height: 1.6;
-                margin: 20px;
+                margin: 0;
                 background-color: #f5f5f5;
+                padding: 10px;
             }
+
             .container {
                 max-width: 800px;
                 margin: 0 auto;
+                padding: 0 15px;
+                width: 100%;
+                box-sizing: border-box;
             }
+
             .error-box {
-                padding: 20px;
+                padding: 15px;
                 border: 1px solid #ff4444;
                 background-color: #ffeeee;
                 border-radius: 4px;
-                margin: 20px 0;
+                margin: 15px 0;
+                word-wrap: break-word;
             }
+
             .login-form {
                 background: white;
-                padding: 20px;
+                padding: 15px;
                 border-radius: 4px;
                 box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                margin-bottom: 20px;
             }
+
             .counter-list {
                 background: white;
-                padding: 20px;
+                padding: 15px;
                 border-radius: 4px;
                 box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                margin-top: 20px;
+                margin-top: 15px;
             }
+
             .counter-item {
                 border: 1px solid #ddd;
-                padding: 15px;
-                margin: 10px 0;
+                padding: 12px;
+                margin: 8px 0;
                 border-radius: 4px;
                 background: #f9f9f9;
             }
+
             .input {
-                padding: 8px;
+                padding: 10px;
                 border: 1px solid #ddd;
                 border-radius: 4px;
-                margin-right: 10px;
+                margin: 5px 0;
+                width: 100%;
+                box-sizing: border-box;
+                font-size: 16px; /* Prevents zoom on iOS */
+                max-width: 100%;
             }
+
             .button {
-                padding: 8px 15px;
+                padding: 12px 20px;
                 border: none;
                 border-radius: 4px;
                 cursor: pointer;
                 background: #007bff;
                 color: white;
-                margin-right: 5px;
+                margin: 5px 0;
+                width: 100%;
+                font-size: 16px;
+                touch-action: manipulation;
             }
-            .button:hover {
-                background: #0056b3;
-            }
+
             .delete-btn {
                 background: #dc3545;
             }
-            .delete-btn:hover {
+
+            .button:hover, .button:active {
+                background: #0056b3;
+            }
+
+            .delete-btn:hover, .delete-btn:active {
                 background: #c82333;
             }
+
             .add-counter-form {
-                margin-top: 20px;
-                padding: 20px;
+                margin-top: 15px;
+                padding: 15px;
                 background: #f8f9fa;
                 border-radius: 4px;
             }
+
             h1, h2 {
                 color: #333;
+                font-size: 24px;
+                margin: 10px 0;
             }
+
             /* Custom Alert Styles */
             .custom-alert {
                 position: fixed;
-                top: 20px;
+                top: 10px;
                 left: 50%;
                 transform: translateX(-50%);
-                padding: 15px 25px;
+                padding: 12px 20px;
                 border-radius: 4px;
                 box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
                 z-index: 1000;
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
-                min-width: 300px;
+                width: 90%;
                 max-width: 500px;
                 opacity: 0;
                 transition: opacity 0.3s ease-in-out;
+                box-sizing: border-box;
             }
+
             .custom-alert.success {
                 background-color: #d4edda;
                 border: 1px solid #c3e6cb;
                 color: #155724;
             }
+
             .custom-alert.error {
                 background-color: #f8d7da;
                 border: 1px solid #f5c6cb;
                 color: #721c24;
             }
+
             .custom-alert.warning {
                 background-color: #fff3cd;
                 border: 1px solid #ffeeba;
                 color: #856404;
             }
+
             .custom-alert-content {
                 flex-grow: 1;
-                margin-right: 15px;
+                margin-right: 12px;
+                font-size: 14px;
             }
+
             .custom-alert-close {
                 cursor: pointer;
                 font-weight: bold;
                 opacity: 0.7;
+                padding: 8px;
+                font-size: 18px;
             }
-            .custom-alert-close:hover {
-                opacity: 1;
-            }
+
             /* Confirmation Dialog Styles */
             .confirm-dialog-overlay {
                 position: fixed;
@@ -131,20 +167,79 @@ export default async function handler(req, res) {
                 align-items: center;
                 justify-content: center;
                 z-index: 1000;
+                padding: 15px;
             }
+
             .confirm-dialog {
                 background: white;
                 padding: 20px;
                 border-radius: 4px;
                 box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                width: 90%;
                 max-width: 400px;
-                width: 100%;
+                margin: 0 auto;
+                box-sizing: border-box;
             }
+
             .confirm-dialog-buttons {
                 margin-top: 20px;
                 display: flex;
                 justify-content: flex-end;
                 gap: 10px;
+                flex-wrap: wrap;
+            }
+
+            /* Media Queries */
+            @media screen and (min-width: 768px) {
+                body {
+                    padding: 20px;
+                }
+
+                .button {
+                    width: auto;
+                    margin-right: 5px;
+                }
+
+                .input {
+                    width: auto;
+                    margin-right: 10px;
+                }
+
+                .confirm-dialog-buttons {
+                    flex-wrap: nowrap;
+                }
+
+                h1, h2 {
+                    font-size: 28px;
+                }
+
+                .custom-alert-content {
+                    font-size: 16px;
+                }
+            }
+
+            /* Touch-friendly improvements */
+            @media (hover: none) {
+                .button {
+                    min-height: 44px; /* Minimum touch target size */
+                }
+
+                .custom-alert-close {
+                    min-width: 44px;
+                    min-height: 44px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+            }
+
+            /* Safe area insets for notched devices */
+            @supports (padding: max(0px)) {
+                body {
+                    padding-left: max(10px, env(safe-area-inset-left));
+                    padding-right: max(10px, env(safe-area-inset-right));
+                    padding-bottom: max(10px, env(safe-area-inset-bottom));
+                }
             }
         </style>
     `;
