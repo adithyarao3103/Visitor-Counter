@@ -10,11 +10,6 @@ Presents the following dashboard (password protected) to create and manage count
 ![dashboard](image.png)
 ( you can put the value of counter in the texbox and click on update to set the counter to the given value )
 
-### `/increment?name=countername`
-
-Increments the counter `countername` by 1.
-Use this route in a hidden iframe in your website to increment the counter.
-
 ### `/show?name=countername`
 
 Returns a svg displaying the current count of counter `countername`.
@@ -52,6 +47,13 @@ You can also change the text on the SVG by using the `text` query.
 
 ![default](https://visitor-counter-adithyarao3103.vercel.app/show?name=test-counter&theme=defaul&text=Custom%20Text)
 
+### `/increment?name=countername`
+
+Increments the counter `countername` by 1.
+This will also return the SVG of the counter, to be used in places where you need to increment and show the count in the same place.
+
+Use this route in a hidden iframe if you want to only increment the counter and not display it.
+
 ## How to use
 
 1. Clone this repository and deploy your own instance on Vercel (The project is made to be deployed on Vercel, the free plan is enough).
@@ -67,3 +69,9 @@ You can also change the text on the SVG by using the `text` query.
 6. You can add an iframe in your static website or whichever website you are to track (with `display:none`) pointing to the `/increment` route.
 
 7. You can access the counter SVG by using the `/show` route.
+
+## Example
+
+You are the visitor:
+
+![default](https://visitor-counter-adithyarao3103.vercel.app/increment?name=visitor-counter&theme=retro)
