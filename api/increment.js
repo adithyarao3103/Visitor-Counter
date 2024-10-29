@@ -10,29 +10,35 @@ gradient: true,
 style: 'flat'
 },
 neon: {
-labelBg: '#1A1A1A',  // Dark background
-countBg: '#FF00FF',  // Bright magenta
-textColor: '#00FF00', // Bright green
+labelBg: '#1A1A1A',
+countBg: '#FF00FF',
+textColor: '#00FF00',
 gradient: true,
 style: 'sharp',
-glowEffect: true     // New property for neon glow
+glowEffect: true
 },
 glassmorphic: {
-labelBg: '#ffffff40', // Semi-transparent white
-countBg: '#ffffff20', // More transparent white
+labelBg: '#ffffff40',
+countBg: '#ffffff20',
 textColor: '#FFFFFF',
 gradient: true,
 style: 'rounded',
-blur: true           // New property for glass effect
+blur: true
 },
 retro: {
-labelBg: '#FFB74D',  // Warm orange
-countBg: '#B0003A',  // Deep red
+labelBg: '#FFB74D',
+countBg: '#B0003A',
 textColor: '#2B2B2B',
 gradient: false,
-style: 'pixel',      // New style for pixelated edges
-pixelSize: 2         // New property for pixel effect
+style: 'pixel',
+pixelSize: 2
 }
+};
+
+// Rate limiting configuration
+const RATE_LIMIT = {
+windowMs: 1 * 60 * 1000, // 1 minute window
+maxRequests: 1 // maximum requests per window per IP
 };
 
 // Validate hex color code
@@ -77,13 +83,13 @@ let svg = `
 if (style.glowEffect) {
 svg += `
 <defs>
-    <filter id="glow">
-    <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
-    <feMerge>
-        <feMergeNode in="coloredBlur"/>
-        <feMergeNode in="SourceGraphic"/>
-    </feMerge>
-    </filter>
+<filter id="glow">
+<feGaussianBlur stdDeviation="1" result="coloredBlur"/>
+<feMerge>
+    <feMergeNode in="coloredBlur"/>
+    <feMergeNode in="SourceGraphic"/>
+</feMerge>
+</filter>
 </defs>
 `;
 }
@@ -91,9 +97,9 @@ svg += `
 if (style.blur) {
 svg += `
 <defs>
-    <filter id="blur">
-    <feGaussianBlur stdDeviation="1.5" result="blur"/>
-    </filter>
+<filter id="blur">
+<feGaussianBlur stdDeviation="1.5" result="blur"/>
+</filter>
 </defs>
 `;
 }
@@ -102,39 +108,37 @@ svg += `
 if (style.gradient) {
 if (theme === 'default') {
     svg += `
-    <linearGradient id="b" x2="0" y2="100%">
-    <stop offset="0" stop-color="#bbb" stop-opacity=".1"/>
-    <stop offset="1" stop-opacity=".1"/>
-    </linearGradient>
-    `;
+<linearGradient id="b" x2="0" y2="100%">
+<stop offset="0" stop-color="#bbb" stop-opacity=".1"/>
+<stop offset="1" stop-opacity=".1"/>
+</linearGradient>
+`;
 } else {
     svg += `
-    <linearGradient id="b" x2="0" y2="100%">
-    <stop offset="0" stop-color="#ffffff" stop-opacity=".2"/>
-    <stop offset="1" stop-opacity=".1"/>
-    </linearGradient>
-    `;
+<linearGradient id="b" x2="0" y2="100%">
+<stop offset="0" stop-color="#ffffff" stop-opacity=".2"/>
+<stop offset="1" stop-opacity=".1"/>
+</linearGradient>
+`;
 }
 }
 
 // Add mask for rounded corners or pixel effect
 if (style.style === 'pixel') {
-// Create pixelated edges
 const pixelSize = style.pixelSize || 2;
 svg += `
 <pattern id="pixel" width="${pixelSize}" height="${pixelSize}" patternUnits="userSpaceOnUse">
-    <rect width="${pixelSize}" height="${pixelSize}" fill="currentColor"/>
+<rect width="${pixelSize}" height="${pixelSize}" fill="currentColor"/>
 </pattern>
 `;
 } else if (style.style !== 'sharp') {
 svg += `
 <mask id="a">
-    <rect width="${totalWidth}" height="${height}" rx="${radius}" fill="#fff"/>
+<rect width="${totalWidth}" height="${height}" rx="${radius}" fill="#fff"/>
 </mask>
 `;
 }
 
-// Main shape group with special effects
 const filterEffect = style.glowEffect ? 'filter="url(#glow)"' : 
                     style.blur ? 'filter="url(#blur)"' : '';
 
@@ -146,7 +150,6 @@ ${style.gradient ? `<path fill="url(#b)" d="M0 0h${totalWidth}v${height}H0z"/>` 
 </g>
 `;
 
-// Text elements with custom colors
 svg += `
 <g text-anchor="middle" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11">
 <text x="${labelWidth/2}" y="14" fill="${labelTextColor}">${labelText}</text>
@@ -154,9 +157,7 @@ svg += `
 </g>
 `;
 
-// Close SVG tag
 svg += `</svg>`;
-
 return svg;
 }
 
@@ -171,6 +172,9 @@ const {
     tf,    // text foreground color
     cf     // counter foreground color
 } = req.query;
+
+// Get client IP address (using X-Forwarded-For header or remote address)
+const clientIP = req.headers['x-forwarded-for']?.split(',')[0] || req.socket.remoteAddress;
 
 if (typeof name !== 'string') {
     throw new Error('Invalid counter name');
@@ -190,14 +194,34 @@ const customColors = {
 };
 
 const counterKey = `counter:${name}`;
+const rateKey = `rate:${name}:${clientIP}`;
+
+// Check if counter exists
 const exists = await kv.exists(counterKey);
 if (!exists) {
     res.status(404).json({ error: 'Counter not found. Create it first using the /add endpoint.' });
     return;
 }
 
-const count = await kv.incr(counterKey) || 0;
-const countText = count.toLocaleString();
+// Check rate limit
+const lastRequest = await kv.get(rateKey);
+const now = Date.now();
+
+let count;
+if (!lastRequest || (now - lastRequest) >= RATE_LIMIT.windowMs) {
+    // Update last request timestamp
+    await kv.set(rateKey, now, {
+    ex: Math.ceil(RATE_LIMIT.windowMs / 1000) // Set expiration in seconds
+    });
+    
+    // Increment counter
+    count = await kv.incr(counterKey);
+} else {
+    // Get current count without incrementing
+    count = await kv.get(counterKey);
+}
+
+const countText = (count || 0).toLocaleString();
 const labelText = text || 'Visitors';
 
 const svg = generateSvg(labelText, countText, theme, customColors);
@@ -213,9 +237,9 @@ console.error('Error getting counter:', error);
 
 const errorSvg = `
 <svg xmlns="http://www.w3.org/2000/svg" width="90" height="20">
-    <rect width="90" height="20" rx="3" fill="#E5534B"/>
-    <text x="45" y="14" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" 
-        font-size="11" fill="white" text-anchor="middle">error</text>
+<rect width="90" height="20" rx="3" fill="#E5534B"/>
+<text x="45" y="14" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" 
+    font-size="11" fill="white" text-anchor="middle">error</text>
 </svg>
 `;
 
