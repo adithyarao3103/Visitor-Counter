@@ -2,18 +2,22 @@
 
 Simple Visitor Counter for Static Website.
 
-## Presents the following routes
+## What is this?
+
+This is a simple javascript server for a visitor counter, designed especially for static websites. Most visitor counters available do not allow one to display the counter value elsewhere, and this is a simple solution for that. In this case, the counter is stored in a database and is updated whenever the counter is incremented. There is a separate show route that also returns an svg displaying the current count of the counter. Therefore, you can track the number of visitors to your website without displaying it on the website itself.
+
+## Routes available
 
 ### `/dashboard`
 
 Presents the following dashboard (password protected) to create and manage counters
 ![dashboard](image.png)
-( you can put the value of counter in the texbox and click on update to set the counter to the given value )
+( you can put the value of counter in the textbox and click on update to set the counter to the given value )
 
 ### `/show?name=countername`
 
-Returns a svg displaying the current count of counter `countername`.
-It also presents the following themes:
+Returns an svg displaying the current value of counter `countername`.
+The following themes are also available:
 
 #### Default
 
@@ -72,6 +76,6 @@ Use this route in a hidden iframe if you want to only increment the counter and 
 
 ## Example
 
-You are the visitor:
+Number of visitors to this GitHub repo:
 
 ![default](https://visitor-counter-adithyarao3103.vercel.app/increment?name=visitor-counter&theme=retro)
