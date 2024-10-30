@@ -406,7 +406,7 @@ export default async function handler(req, res) {
                         }
                         
                         async function togglePause(name, pause) {
-                            dtext = pause ? 'resume' : 'pause';
+                            dtext = pause ? 'pause' : 'resume';
                             showConfirmDialog('Are you sure you want to ' + dtext + ' this counter?', async () => {
                                 try {
                                     const response = await fetch('/pause?name=' + name + '&password=' + password, {
