@@ -83,11 +83,11 @@ export default async function handler(req, res) {
             }
 
             .pause-btn {
-                background: #008000;
+                background: #80c904;
             }
             
             .pause-btn:hover, .pause-btn:active {
-                background: #008000;
+                background: #80c904;
             }
 
             .delete-btn:hover, .delete-btn:active {
@@ -428,7 +428,7 @@ export default async function handler(req, res) {
                                     <input type="number" id="value-${counter.name}" value="${counter.value}" class="input">
                                     <button onclick="updateCounter('${counter.name}')" class="button">Update</button>
                                     <button onclick="deleteCounter('${counter.name}')" class="button delete-btn">Delete</button>
-                                    <button onclick="togglePause('${counter.name}', '${counter.pause ? "Resume": "Pause"}')" class="button pause-btn">${counter.pause ? "Resume": "Pause"}</button>
+                                    <button onclick="togglePause('${counter.name}', '${counter.pause ? "resume": "pause"}')" class="button pause-btn">${counter.pause ? "Resume": "Pause"}</button>
                                 </div>
                             `).join('')}
                             
