@@ -304,9 +304,6 @@ export default async function handler(req, res) {
                     <script>
                         const password = '${password}';
 
-                        const counters = ${JSON.stringify(counters)};
-                        console.log(counters);
-
                         function showAlert(message, type = 'success') {
                             const alertDiv = document.createElement('div');
                             alertDiv.className = \`custom-alert \${type}\`;
@@ -406,8 +403,12 @@ export default async function handler(req, res) {
                         }
                         
                         async function togglePause(name, pause) {
-                            dtext = pause ? 'resume' : 'pause';
-                            console.log(pause);
+                            const dtext;
+                            if (pause) {
+                                dtext = 'resume';
+                            } else {
+                                dtext = 'pause';
+                            }
                             showConfirmDialog('Are you sure you want to ' + dtext + ' this counter?', async () => {
                                 try {
                                     const response = await fetch('/pause?name=' + name + '&password=' + password, {
