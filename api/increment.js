@@ -215,7 +215,6 @@ catch(err){
 let count;
 
 if (pause) {
-    res.status(200).json({ message: 'Not incrementing the counter because paused.' });
     count = await kv.get(counterKey);
     const countText = (count || 0).toLocaleString();
     const labelText = text || 'Visitors';
