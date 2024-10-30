@@ -406,14 +406,15 @@ export default async function handler(req, res) {
                         }
                         
                         async function togglePause(name, pause) {
-                            dtext = pause ? 'pause' : 'resume';
+                            dtext = pause ? 'resume' : 'pause';
+                            console.log(pause);
                             showConfirmDialog('Are you sure you want to ' + dtext + ' this counter?', async () => {
                                 try {
                                     const response = await fetch('/pause?name=' + name + '&password=' + password, {
                                         method: 'POST'
                                     });
                                     if (response.ok) {
-                                        showAlert('Counter '+ dtext + 'ed successfully');
+                                        showAlert('Counter '+ dtext + 'd successfully');
                                         window.location.reload();
                                     } else {
                                         showAlert('Failed to ' + dtext, 'error');
