@@ -281,13 +281,13 @@ export default async function handler(req, res) {
         const counters = [];
         
         for (const name of names) {
-            const value = await kv.get('counter:' + name);
+            const value = await kv.get('counter:'${name});
             let pause;
             try{
                 pause = await kv.get('pause:' + name);
             }catch(e){
                 pause = false;
-                kv.set('pause:' + name, false);
+                await kv.set('pause:' + name, false);
             }
             counters.push({
                 name: name,
@@ -400,6 +400,24 @@ export default async function handler(req, res) {
                                 showAlert('An error occurred while creating the counter', 'error');
                             }
                         }
+                        
+                        async function togglePause(name) {
+                            showConfirmDialog('Are you sure you want to toggle this counter?', async () => {
+                                try {
+                                    const response = await fetch('/pause?name=' + name + '&password=' + password, {
+                                        method: 'POST'
+                                    });
+                                    if (response.ok) {
+                                        showAlert('Counter toggled successfully');
+                                        window.location.reload();
+                                    } else {
+                                        showAlert('Failed to toggle', 'error');
+                                    }
+                                } catch (error) {
+                                    showAlert('An error occurred while toggling', 'error');
+                                }
+                            });
+                        }
                     </script>
                 </head>
                 <body>
@@ -413,7 +431,7 @@ export default async function handler(req, res) {
                                     <input type="number" id="value-${counter.name}" value="${counter.value}" class="input">
                                     <button onclick="updateCounter('${counter.name}')" class="button">Update</button>
                                     <button onclick="deleteCounter('${counter.name}')" class="button delete-btn">Delete</button>
-                                    <button onclick="togglePause('${counter.name}, ${counter.pause}')" class="button pause-btn">${counter.pause ? "Resume": "Pause"}</button>
+                                    <button onclick="togglePause('${counter.name}')" class="button pause-btn">${counter.pause ? "Resume": "Pause"}</button>
                                 </div>
                             `).join('')}
                             
