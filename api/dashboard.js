@@ -428,7 +428,7 @@ export default async function handler(req, res) {
                                     <input type="number" id="value-${counter.name}" value="${counter.value}" class="input">
                                     <button onclick="updateCounter('${counter.name}')" class="button">Update</button>
                                     <button onclick="deleteCounter('${counter.name}')" class="button delete-btn">Delete</button>
-                                    <button onclick="togglePause('${counter.name}, ${counter.pause}')" class="button pause-btn">${pause ? "Resume": "Pause"}</button>
+                                    <button onclick="togglePause('${counter.name}, ${counter.pause}')" class="button pause-btn">${counter.pause ? "Resume": "Pause"}</button>
                                 </div>
                             `).join('')}
                             
