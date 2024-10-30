@@ -304,6 +304,9 @@ export default async function handler(req, res) {
                     <script>
                         const password = '${password}';
 
+                        const counters = ${JSON.stringify(counters)};
+                        console.log(counters);
+
                         function showAlert(message, type = 'success') {
                             const alertDiv = document.createElement('div');
                             alertDiv.className = \`custom-alert \${type}\`;
