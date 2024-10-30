@@ -284,9 +284,9 @@ export default async function handler(req, res) {
         for (const name of names) {
             const value = await kv.get('counter:'+name);
             let pause;
-            try{
-                pause = await kv.get('pause:'+name);
-            }catch(e){
+            pause = await kv.get('pause:'+name);
+            if (pause == null)
+            {
                 pause = false;
                 await kv.set('pause:'+name, false);
             }
