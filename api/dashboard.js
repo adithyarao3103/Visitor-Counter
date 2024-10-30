@@ -83,11 +83,11 @@ export default async function handler(req, res) {
             }
 
             .pause-btn {
-                background: #265828;
+                background: #008000;
             }
             
             .pause-btn:hover, .pause-btn:active {
-                background: #265828;
+                background: #008000;
             }
 
             .delete-btn:hover, .delete-btn:active {
