@@ -380,25 +380,6 @@ export default async function handler(req, res) {
                             });
                         }
 
-                        async function togglePause(name, pause) {
-                            const text = pause ? 'resume' : 'pause';
-                            showConfirmDialog('Are you sure you want to ' + text + ' this counter?', async () => {
-                                try {
-                                    const response = await fetch('/pause?name=' + name + '&password=' + password, {
-                                        method: 'POST'
-                                    });
-                                    if (response.ok) {
-                                        showAlert('Counter + text + 'ed successfully');
-                                        window.location.reload();
-                                    } else {
-                                        showAlert('Failed to toggle pause', 'error');
-                                    }
-                                } catch (error) {
-                                    showAlert('An error occurred while toggling pause', 'error');
-                                }
-                            });
-                        }
-
                         async function addCounter() {
                             const name = document.getElementById('new-counter-name').value;
                             if (!name.trim()) {
