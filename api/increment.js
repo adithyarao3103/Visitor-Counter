@@ -212,17 +212,27 @@ try{
 catch(err){
     pause = false;
 }
+let count;
 
 if (pause) {
     res.status(200).json({ message: 'Not incrementing the counter because paused.' });
-    return;
+    count = await kv.get(counterKey);
+    const countText = (count || 0).toLocaleString();
+    const labelText = text || 'Visitors';
+    labelText += ' (Paused)';
+    const svg = generateSvg(labelText, countText, theme, customColors);
+    res.setHeader('Content-Type', 'image/svg+xml');
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+
+    res.status(200).send(svg);
 }
 
 // Check rate limit
 const lastRequest = await kv.get(rateKey);
 const now = Date.now();
 
-let count;
 if (!lastRequest || (now - lastRequest) >= RATE_LIMIT.windowMs) {
     // Update last request timestamp
     await kv.set(rateKey, now, {
