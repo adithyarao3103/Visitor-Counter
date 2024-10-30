@@ -217,7 +217,7 @@ let count;
 if (pause) {
     count = await kv.get(counterKey);
     const countText = (count || 0).toLocaleString();
-    const labelText = text || 'Visitors';
+    let labelText = text || 'Visitors';
     labelText += ' (Paused)';
     const svg = generateSvg(labelText, countText, theme, customColors);
     res.setHeader('Content-Type', 'image/svg+xml');
