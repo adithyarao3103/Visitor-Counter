@@ -82,6 +82,10 @@ export default async function handler(req, res) {
                 background: #dc3545;
             }
 
+            .pause-btn {
+                background: #f9c242;
+            }
+
             .button:hover, .button:active {
                 background: #0056b3;
             }
@@ -266,13 +270,25 @@ export default async function handler(req, res) {
 
     const renderDashboard = async (password) => {
         const keys = await kv.keys('counter:*');
+        const names = [];
+        for (const key of keys) {
+            names.push(key.split(':')[1]);
+        }
         const counters = [];
         
-        for (const key of keys) {
-            const value = await kv.get(key);
+        for (const name of names) {
+            const value = await kv.get('counter:' + name);
+            let pause;
+            try{
+                pause = await kv.get('pause:' + name);
+            }catch(e){
+                pause = false;
+                kv.set('pause:' + name, false);
+            }
             counters.push({
-                name: key.replace('counter:', ''),
-                value: value
+                name: name,
+                value: value,
+                pause: pause
             });
         }
 
@@ -360,6 +376,25 @@ export default async function handler(req, res) {
                             });
                         }
 
+                        async function togglePause(name, pause) {
+                            const text = pause ? 'resume' : 'pause';
+                            showConfirmDialog('Are you sure you want to ' + text + ' this counter?', async () => {
+                                try {
+                                    const response = await fetch('/pause?name=' + name + '&password=' + password, {
+                                        method: 'POST'
+                                    });
+                                    if (response.ok) {
+                                        showAlert('Counter + text + 'ed successfully');
+                                        window.location.reload();
+                                    } else {
+                                        showAlert('Failed to toggle pause', 'error');
+                                    }
+                                } catch (error) {
+                                    showAlert('An error occurred while toggling pause', 'error');
+                                }
+                            });
+                        }
+
                         async function addCounter() {
                             const name = document.getElementById('new-counter-name').value;
                             if (!name.trim()) {
@@ -393,6 +428,7 @@ export default async function handler(req, res) {
                                     <input type="number" id="value-${counter.name}" value="${counter.value}" class="input">
                                     <button onclick="updateCounter('${counter.name}')" class="button">Update</button>
                                     <button onclick="deleteCounter('${counter.name}')" class="button delete-btn">Delete</button>
+                                    <button onclick="togglePause('${counter.name}, ${counter.pause}')" class="button pause-btn">${pause ? "Resume": "Pause"}</button>
                                 </div>
                             `).join('')}
                             

@@ -195,11 +195,26 @@ const customColors = {
 
 const counterKey = `counter:${name}`;
 const rateKey = `rate:${name}:${clientIP}`;
+const pauseKey = `pause:${name}`;
 
 // Check if counter exists
 const exists = await kv.exists(counterKey);
 if (!exists) {
     res.status(404).json({ error: 'Counter not found. Create it first using the /add endpoint.' });
+    return;
+}
+
+let pause;
+
+try{
+    pause = await kv.get(pauseKey);
+}
+catch(err){
+    pause = false;
+}
+
+if (pause) {
+    res.status(200).json({ message: 'Not incrementing the counter because paused.' });
     return;
 }
 

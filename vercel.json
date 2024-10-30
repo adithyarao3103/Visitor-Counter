@@ -41,6 +41,10 @@
     {
     "src": "/sample-show",
     "dest": "/api/sample-show.js"
+    },
+    {
+    "src": "/pause",
+    "dest": "/api/pause.js"
     }
 ]
 }
