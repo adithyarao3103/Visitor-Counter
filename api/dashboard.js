@@ -90,10 +90,6 @@ export default async function handler(req, res) {
                 background: #f9c242;
             }
 
-            .button:hover, .button:active {
-                background: #0056b3;
-            }
-
             .delete-btn:hover, .delete-btn:active {
                 background: #c82333;
             }
@@ -195,59 +191,6 @@ export default async function handler(req, res) {
                 justify-content: flex-end;
                 gap: 10px;
                 flex-wrap: wrap;
-            }
-
-            /* Media Queries */
-            @media screen and (min-width: 768px) {
-                body {
-                    padding: 20px;
-                }
-
-                .button {
-                    width: auto;
-                    margin-right: 5px;
-                }
-
-                .input {
-                    width: auto;
-                    margin-right: 10px;
-                }
-
-                .confirm-dialog-buttons {
-                    flex-wrap: nowrap;
-                }
-
-                h1, h2 {
-                    font-size: 28px;
-                }
-
-                .custom-alert-content {
-                    font-size: 16px;
-                }
-            }
-
-            /* Touch-friendly improvements */
-            @media (hover: none) {
-                .button {
-                    min-height: 44px; /* Minimum touch target size */
-                }
-
-                .custom-alert-close {
-                    min-width: 44px;
-                    min-height: 44px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                }
-            }
-
-            /* Safe area insets for notched devices */
-            @supports (padding: max(0px)) {
-                body {
-                    padding-left: max(10px, env(safe-area-inset-left));
-                    padding-right: max(10px, env(safe-area-inset-right));
-                    padding-bottom: max(10px, env(safe-area-inset-bottom));
-                }
             }
         </style>
     `;
