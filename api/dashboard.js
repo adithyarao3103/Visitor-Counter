@@ -278,16 +278,17 @@ export default async function handler(req, res) {
         for (const key of keys) {
             names.push(key.split(':')[1]);
         }
+        console.log(names);
         const counters = [];
         
         for (const name of names) {
-            const value = await kv.get('counter:' + name);
+            const value = await kv.get('counter:'+name);
             let pause;
             try{
-                pause = await kv.get('pause:' + name);
+                pause = await kv.get('pause:'+name);
             }catch(e){
                 pause = false;
-                await kv.set('pause:' + name, false);
+                await kv.set('pause:'+name, false);
             }
             counters.push({
                 name: name,
