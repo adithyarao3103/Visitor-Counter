@@ -182,7 +182,7 @@ const customColors = {
     counterFg: formatColor(cf)
 };
 
-const count = 241
+const count = 240;
 const countText = count.toLocaleString();
 const labelText = text || 'Visitors';
 
