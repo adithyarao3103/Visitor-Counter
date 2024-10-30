@@ -17,7 +17,6 @@ try {
 
     if (!password) {
         res.status(401).json({ error: 'Password needed.' });
-
         return;
     }
 
@@ -42,7 +41,7 @@ try {
 
     const pauseKey = `pause:${name}`;
 
-    exists =  await kv.exists(pauseKey);
+    const exists =  await kv.exists(pauseKey);
     if (!exists) {
         res.status(404).json({ error: 'Counter not found. Create it first using the /add endpoint.' });
         return;
