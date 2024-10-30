@@ -416,7 +416,7 @@ export default async function handler(req, res) {
                                         showAlert('Counter '+ dtext + 'ed successfully');
                                         window.location.reload();
                                     } else {
-                                        showAlert('Failed to' + dtext, 'error');
+                                        showAlert('Failed to ' + dtext, 'error');
                                     }
                                 } catch (error) {
                                     showAlert('An error occurred while toggling', 'error');

@@ -47,7 +47,7 @@ try {
         return;
     }
 
-    pause = await kv.get(pauseKey);
+    const pause = await kv.get(pauseKey);
     await kv.set(pauseKey, !pause);
 
     
