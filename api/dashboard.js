@@ -405,9 +405,9 @@ export default async function handler(req, res) {
                         async function togglePause(name, pause) {
                             let dtext;
                             if (pause) {
-                                const dtext = 'resume';
+                                dtext = 'resume';
                             } else {
-                                const dtext = 'pause';
+                                dtext = 'pause';
                             }
                             showConfirmDialog('Are you sure you want to ' + dtext + ' this counter?', async () => {
                                 try {
