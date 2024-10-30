@@ -11,7 +11,7 @@ This is a simple javascript server for a visitor counter, designed especially fo
 ### `/dashboard`
 
 Presents the following dashboard (password protected) to create and manage counters
-![1730313206250](image/readme/1730313206250.png)
+![1730313364774](image/readme/1730313364774.png)
 ( you can put the value of counter in the textbox and click on update to set the counter to the given value )
 
 ### `/show?name=countername`
