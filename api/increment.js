@@ -226,6 +226,7 @@ if (pause) {
     res.setHeader('Expires', '0');
 
     res.status(200).send(svg);
+    return;
 }
 
 // Check rate limit
