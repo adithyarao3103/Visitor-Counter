@@ -57,7 +57,6 @@ try {
 
 } catch (error) {
     console.error('Error setting counter:', error);
-    res.setHeader('Content-Type', 'text/html');
-    res.status(500).send(renderHtml('Failed to set counter'));
+    res.status(500).json({ error: 'Could not pause counter' });
 }
 }

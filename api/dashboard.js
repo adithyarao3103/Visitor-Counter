@@ -85,6 +85,10 @@ export default async function handler(req, res) {
             .pause-btn {
                 background: #f9c242;
             }
+            
+            .pause-btn:hover, .pause-btn:active {
+                background: #e0a800;
+            }
 
             .button:hover, .button:active {
                 background: #0056b3;
