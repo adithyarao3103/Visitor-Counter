@@ -87,7 +87,7 @@ export default async function handler(req, res) {
             }
             
             .pause-btn:hover, .pause-btn:active {
-                background: #e0a800;
+                background: #f9c242;
             }
 
             .button:hover, .button:active {
@@ -402,13 +402,7 @@ export default async function handler(req, res) {
                             }
                         }
                         
-                        async function togglePause(name, pause) {
-                            let dtext;
-                            if (pause) {
-                                dtext = 'resume';
-                            } else {
-                                dtext = 'pause';
-                            }
+                        async function togglePause(name, dtext) {
                             showConfirmDialog('Are you sure you want to ' + dtext + ' this counter?', async () => {
                                 try {
                                     const response = await fetch('/pause?name=' + name + '&password=' + password, {
@@ -438,7 +432,7 @@ export default async function handler(req, res) {
                                     <input type="number" id="value-${counter.name}" value="${counter.value}" class="input">
                                     <button onclick="updateCounter('${counter.name}')" class="button">Update</button>
                                     <button onclick="deleteCounter('${counter.name}')" class="button delete-btn">Delete</button>
-                                    <button onclick="togglePause('${counter.name}', '${counter.pause}')" class="button pause-btn">${counter.pause ? "Resume": "Pause"}</button>
+                                    <button onclick="togglePause('${counter.name}', '${counter.pause ? "Resume": "Pause"}')" class="button pause-btn">${counter.pause ? "Resume": "Pause"}</button>
                                 </div>
                             `).join('')}
                             
