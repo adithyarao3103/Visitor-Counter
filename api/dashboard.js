@@ -251,6 +251,11 @@ export default async function handler(req, res) {
     const renderLoginPage = (error = '') => `
         <html>
             <head>
+                <title>Visitor Counter | Dashboard</title>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+                <meta nam"author" content="Adithya A Rao"/>
+                <meta name="description" content="Dashboard for the Visitor Counter App for static websites."/>
+                <meta name="keywords" content="visitor counter, static websites, dashboard, password"/>
                 ${commonStyles}
             </head>
             <body>
