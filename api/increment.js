@@ -37,7 +37,7 @@ pixelSize: 2
 
 // Rate limiting configuration
 const RATE_LIMIT = {
-windowMs: 1 * 60 * 1000, // 1 minute window
+windowMs: 5 * 60 * 1000, // 1 minute window
 maxRequests: 1 // maximum requests per window per IP
 };
 
