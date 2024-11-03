@@ -54,7 +54,7 @@ You can also change the text on the SVG by using the `text` query.
 
 Increments the counter `countername` by 1.
 
-This comes with a multiple request protection, so you can't increment the counter more than once per minute, per ip-address. This is to prevent spamming of increment by some compilation reloads or in similar cases. It will also keep in check that the counter value is not manipulated by multiple reloads of the page by the same device.
+This comes with a multiple request protection, so you can't increment the counter more than once per 5 minutes, per ip-address. This is to prevent spamming of increment by some compilation reloads or in similar cases. It will also keep in check that the counter value is not manipulated by multiple reloads of the page by the same device.
 
 This route will also return the SVG of the counter, useful in cases where you need to increment and show the count in the same place.
 
