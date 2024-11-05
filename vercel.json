@@ -45,6 +45,10 @@
     {
     "src": "/pause",
     "dest": "/api/pause.js"
+    },
+    {
+    "src": "/regions",
+    "dest": "/api/regions.js"
     }
 ]
 }
