@@ -1,6 +1,5 @@
 import { kv } from '@vercel/kv';
 import crypto from 'crypto';
-const fs = require('fs').promises; 
 
 export default async function handler(req, res) {
     const commonStyles = `
@@ -438,7 +437,13 @@ export default async function handler(req, res) {
                             for (r in regions){
                             csv += regions[r].country + ', ' + regions[r].region + '\n';
                             }
-                            await fs.writeFile("regions_" + name + ".csv", csv);
+                            var element = document.createElement('a');
+                            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(csv));
+                            element.setAttribute('download', "regions_" + name + ".csv");
+                            element.style.display = 'none';
+                            document.body.appendChild(element);
+                            element.click();
+                            document.body.removeChild(element);
                         }
                     </script>
                 </head>
