@@ -242,8 +242,15 @@ if (!lastRequest || (now - lastRequest) >= RATE_LIMIT.windowMs) {
     // Increment counter
     count = await kv.incr(counterKey);
     let country_response = await fetch(`https://ipapi.co/${clientIP}/country_name/`);
+    let region_response = await fetch(`https://ipapi.co/${clientIP}/region/`);
     let country_data = await country_response.text();
-    await kv.rpush('countries', country_data);
+    let region_data = await region_response.text();
+    let save_object = {
+        "country": country_data,
+        "region": region_data
+    };
+    let save_json = JSON.stringify(save_object);
+    await kv.rpush('countries', save_json);
 
 } else {
     // Get current count without incrementing
