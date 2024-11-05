@@ -438,7 +438,7 @@ export default async function handler(req, res) {
                             for (r in regions){
                             csv += regions[r].country + ', ' + regions[r].region + '\n';
                             }
-                            await fs.writeFile("regions_'${name}'.csv", csv);
+                            await fs.writeFile("regions_" + name + ".csv", csv);
                         }
                     </script>
                 </head>
