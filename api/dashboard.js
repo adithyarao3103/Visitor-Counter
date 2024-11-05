@@ -1,5 +1,6 @@
 import { kv } from '@vercel/kv';
 import crypto from 'crypto';
+const fs = require('fs').promises; 
 
 export default async function handler(req, res) {
     const commonStyles = `
@@ -84,6 +85,14 @@ export default async function handler(req, res) {
 
             .pause-btn {
                 background: #80c904;
+            }
+            
+            .dwnld-btn {
+                background: #000000;
+            }
+
+            .dwnld-btn:hover, .dwnld-btn:active {
+                background: #0000000;
             }
             
             .pause-btn:hover, .pause-btn:active {
@@ -420,6 +429,17 @@ export default async function handler(req, res) {
                                 }
                             });
                         }
+
+                        
+                        async function downloadCSV(name){
+                            const data = await fetch('/regions?name=' + name + '&password=' + password).then(response => response.json());
+                            const regions = data.regions;
+                            let csv = 'Country, Region\n';
+                            for (r in regions){
+                            csv += regions[r].country + ', ' + regions[r].region + '\n';
+                            }
+                            await fs.writeFile("regions_'${name}'.csv", csv);
+                        }
                     </script>
                 </head>
                 <body>
@@ -434,6 +454,7 @@ export default async function handler(req, res) {
                                     <button onclick="updateCounter('${counter.name}')" class="button">Update</button>
                                     <button onclick="deleteCounter('${counter.name}')" class="button delete-btn">Delete</button>
                                     <button onclick="togglePause('${counter.name}', '${counter.pause ? "resume": "pause"}')" class="button pause-btn">${counter.pause ? "Resume": "Pause"}</button>
+                                    <button onclick="downloadCSV('${counter.name}')" class="button dwnld-btn">Download Regions</button>
                                 </div>
                             `).join('')}
                             
