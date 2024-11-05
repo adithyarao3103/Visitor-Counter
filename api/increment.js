@@ -250,7 +250,8 @@ if (!lastRequest || (now - lastRequest) >= RATE_LIMIT.windowMs) {
         "region": region_data
     };
     let save_json = JSON.stringify(save_object);
-    await kv.rpush('countries', save_json);
+    const regions_key = `regions:${name}`;
+    await kv.rpush(regions_key, save_json);
 
 } else {
     // Get current count without incrementing
