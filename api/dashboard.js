@@ -14,7 +14,7 @@ export default async function handler(req, res) {
             }
 
             .container {
-                max-width: 800px;
+                max-width: 50vw;
                 margin: 0 auto;
                 padding: 0 15px;
                 width: 100%;
