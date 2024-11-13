@@ -16,7 +16,7 @@ Presents the following dashboard (password protected) to create and manage count
 - You can create a new counter with a name by using the Add Counter button.
 - You can update the value of an existing counter by keeping the required value of the counter in the number box and using the Update button.
 - Further, you can delete, pause/resume incrementing a given counter.
-- The app also gets the country and region for each valid increment by using the [ipapi.co](https://ipapi.co/) API, and stores it in the database. You can download a csv file containing the data by using the Download Regions button.
+- The app also gets the country, region, and city, for each valid increment by using the [ipinfo.io/](https://ipinfo.io/) API, and stores it in the database. You can download a csv file containing the data by using the Download Regions button.
 
 
 ### `/show?name=countername`
@@ -72,7 +72,7 @@ Use this route in a hidden iframe if you want to only increment the counter and 
 
 2. Go back to your profile dashboard, navigate to `Storage>Create Database>Upstash>Upstash KV` to create a KV database, and connect it to the project deployment.
 
-3. On your profile dashboard, go to `Settings>Environment Variables` and add Key:`ADMIN_PASSWORD_HASH`, Value: sha256 hash of your password (get the hash from [here](https://emn178.github.io/online-tools/sha256.html)). Connect it to the project deployment.
+3. On your profile dashboard, go to `Settings>Environment Variables` and add Key:`ADMIN_PASSWORD_HASH`, Value: sha256 hash of your password (get the hash from [here](https://emn178.github.io/online-tools/sha256.html)). Connect it to the project deployment. Also get an api token from [https://ipinfo.io/](https://ipinfo.io/) and add Key:`IPINFO_TOKEN`, Value: the token. Connect it to the project deployment.
 
 4. Redeploy the project to ensure all the environment variables are correctly connected.  
 
