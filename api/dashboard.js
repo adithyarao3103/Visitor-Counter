@@ -433,9 +433,9 @@ export default async function handler(req, res) {
                         async function downloadCSV(name){
                             const data = await fetch('/regions?name=' + name + '&password=' + password).then(response => response.json());
                             const regions = data.regions;
-                            let csv = 'Country, Region\\n';
+                            let csv = 'Country, Region, City\\n';
                             for (r in regions){
-                            csv += regions[r].country + ', ' + regions[r].region + '\\n';
+                            csv += regions[r].country + ', ' + regions[r].region + ', ' + regions[r].city + '\\n';
                             }
                             var element = document.createElement('a');
                             element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(csv));
