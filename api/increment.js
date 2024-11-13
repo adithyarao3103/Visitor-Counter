@@ -241,7 +241,12 @@ if (!lastRequest || (now - lastRequest) >= RATE_LIMIT.windowMs) {
     
     // Increment counter
     count = await kv.incr(counterKey);
-    const ipInfoToken = '32a2340c9b0836';
+    
+    const ipInfoToken = process.env.IPINFO_TOKEN;
+    if (!ipInfoToken) {
+        throw new Error('IPINFO_TOKEN environment variable is not set');
+    }
+
     const ipInfoResponse = await fetch(`https://ipinfo.io/${clientIP}?token=${ipInfoToken}`);
     const ipData = await ipInfoResponse.json();
     let save_object = {
