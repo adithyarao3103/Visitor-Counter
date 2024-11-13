@@ -241,13 +241,13 @@ if (!lastRequest || (now - lastRequest) >= RATE_LIMIT.windowMs) {
     
     // Increment counter
     count = await kv.incr(counterKey);
-    let country_response = await fetch(`https://ipapi.co/${clientIP}/country_name/`);
-    let region_response = await fetch(`https://ipapi.co/${clientIP}/region/`);
-    let country_data = await country_response.text();
-    let region_data = await region_response.text();
+    const ipInfoToken = '32a2340c9b0836';
+    const ipInfoResponse = await fetch(`https://ipinfo.io/${clientIP}?token=${ipInfoToken}`);
+    const ipData = await ipInfoResponse.json();
     let save_object = {
-        "country": country_data,
-        "region": region_data
+        "country": ipData.country,
+        "region": ipData.region,
+        "city": ipData.city
     };
     let save_json = JSON.stringify(save_object);
     const regions_key = `regions:${name}`;
