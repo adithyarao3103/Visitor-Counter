@@ -98,15 +98,15 @@ export default async function handler(req, res) {
             }
 
             .delete-btn {
-                background: #dc3545;
+                background: #ff0000;
             }
 
             .pause-btn {
-                background: #80c904;
+                background: #069c56;
             }
 
             .resume-btn {
-                background: #ffa500;
+                background: #ff980e;
             }
             
             .dwnld-btn {
