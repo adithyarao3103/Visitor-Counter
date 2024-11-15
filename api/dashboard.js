@@ -104,6 +104,10 @@ export default async function handler(req, res) {
             .pause-btn {
                 background: #80c904;
             }
+
+            .resume-btn {
+                background: #ffa500;
+            }
             
             .dwnld-btn {
                 background: #000000;
@@ -481,7 +485,7 @@ export default async function handler(req, res) {
                                     <input type="number" id="value-${counter.name}" placeholder="${counter.value}" class="input">
                                     <button onclick="updateCounter('${counter.name}')" class="button">Update</button>
                                     <button onclick="deleteCounter('${counter.name}')" class="button delete-btn">Delete</button>
-                                    <button onclick="togglePause('${counter.name}', '${counter.pause ? "resume": "pause"}')" class="button pause-btn">${counter.pause ? "Resume": "Pause"}</button>
+                                    <button onclick="togglePause('${counter.name}', '${counter.pause ? "resume": "pause"}')" class="button ${counter.pause ? "resume-btn": "pause-btn"}">${counter.pause ? "Resume": "Pause"}</button>
                                     <button onclick="downloadCSV('${counter.name}')" class="button dwnld-btn">Download Regions</button>
                                 </div>
                             `).join('')}
