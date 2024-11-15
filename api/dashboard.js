@@ -357,6 +357,10 @@ export default async function handler(req, res) {
 
                         async function updateCounter(name) {
                             const value = document.getElementById('value-' + name).value;
+                            if (value.trim() === "") {
+                                window.location.reload();
+                                return;
+                            }
                             try {
                                 const response = await fetch('/set?name=' + name + '&value=' + value + '&password=' + password, {
                                     method: 'POST'
@@ -455,7 +459,7 @@ export default async function handler(req, res) {
                             ${counters.map(counter => `
                                 <div class="counter-item">
                                     <strong>${counter.name}</strong>: 
-                                    <input type="number" id="value-${counter.name}" value="${counter.value}" class="input">
+                                    <input type="number" id="value-${counter.name}" plaecholder="${counter.value}" class="input">
                                     <button onclick="updateCounter('${counter.name}')" class="button">Update</button>
                                     <button onclick="deleteCounter('${counter.name}')" class="button delete-btn">Delete</button>
                                     <button onclick="togglePause('${counter.name}', '${counter.pause ? "resume": "pause"}')" class="button pause-btn">${counter.pause ? "Resume": "Pause"}</button>
