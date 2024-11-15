@@ -459,7 +459,7 @@ export default async function handler(req, res) {
                             ${counters.map(counter => `
                                 <div class="counter-item">
                                     <strong>${counter.name}</strong>: 
-                                    <input type="number" id="value-${counter.name}" plaecholder="${counter.value}" class="input">
+                                    <input type="number" id="value-${counter.name}" placeholder="${counter.value}" class="input">
                                     <button onclick="updateCounter('${counter.name}')" class="button">Update</button>
                                     <button onclick="deleteCounter('${counter.name}')" class="button delete-btn">Delete</button>
                                     <button onclick="togglePause('${counter.name}', '${counter.pause ? "resume": "pause"}')" class="button pause-btn">${counter.pause ? "Resume": "Pause"}</button>
