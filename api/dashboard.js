@@ -13,6 +13,25 @@ export default async function handler(req, res) {
                 padding: 10px;
             }
 
+            ::-webkit-input-placeholder {
+                color: #000;
+                opacity: 1 !important; /* for older chrome versions. may no longer apply. */
+            }
+
+            :-moz-placeholder { /* Firefox 18- */
+                color: #000;
+                opacity: 1 !important;
+            }
+
+            ::-moz-placeholder {  /* Firefox 19+ */
+                color: #000;
+                opacity: 1 !important;
+            }
+
+            :-ms-input-placeholder {  
+                color: #000;
+            }
+
             .container {
                 max-width: 50vw;
                 margin: 0 auto;
