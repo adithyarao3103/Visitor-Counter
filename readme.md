@@ -14,7 +14,7 @@ Presents the following dashboard (password protected) to create and manage count
 ![1730787587832](image/readme/1730787587832.png)
 
 - You can create a new counter with a name by using the Add Counter button.
-- You can update the value of an existing counter by keeping the required value of the counter in the number box and using the Update button.
+- You can update the value of an existing counter by typing the required value of the counter in the number box and using the Update button.
 - Further, you can delete, pause/resume incrementing a given counter.
 - The app also gets the country, region, and city, for each valid increment by using the [ipinfo.io/](https://ipinfo.io/) API, and stores it in the database. You can download a csv file containing the data by using the Download Regions button.
 
