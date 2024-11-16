@@ -407,7 +407,7 @@ export default async function handler(req, res) {
                                     });
                                     if (response.ok) {
                                         showAlert('Counter deleted successfully');
-                                        window.location.reload();
+                                        document.getElementById("counter-" + name).outerHTML = "";
                                     } else {
                                         showAlert('Failed to delete counter', 'error');
                                     }
@@ -429,7 +429,9 @@ export default async function handler(req, res) {
                                 });
                                 if (response.ok) {
                                     showAlert('Counter created successfully');
-                                    window.location.reload();
+                                    document.getElementById('counter-list').innerHTML += "<div class="counter-item" id='counter-" + name + "'><strong>"+ name +"</strong>: 
+                                    <input type='number' id='value-" + name + " placeholder='0' class='input'><button onclick='updateCounter(" + "'" + name + "'"  + ")' class='button'>Update</button><button onclick='deleteCounter(" + "'" + name + "'"  + ")' class='button delete-btn'>Delete</button><button onclick='togglePause(" + "'" + name + "'"  + ", " + "'resume'"  + ")' class='button pause-btn'>Pause</button><button onclick='downloadCSV(" + "'" + name + "'"  + ")' class='button dwnld-btn'>Download Regions</button>
+                                </div>;"
                                 } else {
                                     showAlert('Failed to create counter', 'error');
                                 }
@@ -477,10 +479,10 @@ export default async function handler(req, res) {
                 <body>
                     <div class="container">
                         <h1>Counter Dashboard</h1>
-                        <div class="counter-list">
+                        <div class="counter-list" id="counter-list">
                             <h2>Current Counters</h2>
                             ${counters.map(counter => `
-                                <div class="counter-item">
+                                <div class="counter-item" id="counter-${counter.name}">
                                     <strong>${counter.name}</strong>: 
                                     <input type="number" id="value-${counter.name}" placeholder="${counter.value}" class="input">
                                     <button onclick="updateCounter('${counter.name}')" class="button">Update</button>
