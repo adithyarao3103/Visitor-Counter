@@ -429,7 +429,7 @@ export default async function handler(req, res) {
                                 });
                                 if (response.ok) {
                                     showAlert('Counter created successfully');
-                                    document.getElementById('counter-list').innerHTML += "<div class='counter-item' id='counter-" + name + "'><strong>"+ name +"</strong>: <input type='number' id='value-" + name + " placeholder='0' class='input'><button onclick='updateCounter(" + "'" + name + "'"  + ")' class='button'>Update</button><button onclick='deleteCounter(" + "'" + name + "'"  + ")' class='button delete-btn'>Delete</button><button onclick='togglePause(" + "'" + name + "'"  + ", " + "'resume'"  + ")' class='button pause-btn'>Pause</button><button onclick='downloadCSV(" + "'" + name + "'"  + ")' class='button dwnld-btn'>Download Regions</button>
+                                    document.getElementById('counter-list').innerHTML += "<div class='counter-item' id='counter-" + name + "'><strong>"+ name +"</strong>: <input type='number' id='value-" + name + " placeholder='0' class='input'><button onclick='updateCounter(" + '"' + name + '"'  + ")' class='button'>Update</button><button onclick='deleteCounter(" + '"' + name + '"'  + ")' class='button delete-btn'>Delete</button><button onclick='togglePause(" + '"' + name + '"'  + ", " + '"resume"'  + ")' class='button pause-btn'>Pause</button><button onclick='downloadCSV(" + '"' + name + '"'  + ")' class='button dwnld-btn'>Download Regions</button>
                                 </div>;"
                                 } else {
                                     showAlert('Failed to create counter', 'error');
