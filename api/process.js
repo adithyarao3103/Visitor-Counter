@@ -90,13 +90,9 @@ try {
     const visitorCounts = Object.values(country_count_sorted);
 
     const chartJSNodeCanvas = new ChartJSNodeCanvas({
-        width: 1200, // Increased width for better readability
-        height: Math.max(600, Object.keys(country_count).length * 25), // Dynamic height based on number of countries
-        backgroundColour: 'white',
-        plugins: {
-            modern: true,
-            requireLegacy: ['chartjs-plugin-datalabels']
-        }
+        width: 1200,
+        height: Math.max(600, Object.keys(country_count).length * 25),
+        backgroundColour: 'white'
     });
 
     // Update the chartConfig options
