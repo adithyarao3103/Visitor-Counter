@@ -71,8 +71,8 @@ try {
     let country_count = {};
     let colors = [];
     for (let r in regions){
-        country = countries[regions[r].country].country;
-        continent = countries[regions[r].country].continent;
+        let country = countries[regions[r].country].country;
+        let continent = countries[regions[r].country].continent;
         if (country_count[country]){
             country_count[country] += 1;
         }
