@@ -3,6 +3,8 @@ import crypto from 'crypto';
 import './data.js';
 import { createCanvas } from 'canvas';
 import { ChartJSNodeCanvas } from 'chartjs-node-canvas';
+const { registerFont } = require('canvas');
+registerFont('./fonts/Arial.ttf', { family: 'Arial' });
 
 export default async function handler(req, res) {
 try {
