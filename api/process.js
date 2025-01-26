@@ -139,6 +139,12 @@ try {
         },
     };
 
+    const chartJSNodeCanvas = new ChartJSNodeCanvas({
+        width: 800,
+        height: 600,
+        backgroundColour: 'white'
+    });
+    
     // Render chart to a PNG buffer
     const imageBuffer = await chartJSNodeCanvas.renderToBuffer(chartConfig);
 
