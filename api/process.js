@@ -46,7 +46,7 @@ try {
         return;
     }
 
-    continent_colors = {
+    let continent_colors = {
         'Europe': '#66B2FF',
         'Asia': '#FF9999', 
         'Africa': '#99FF99',
@@ -54,9 +54,9 @@ try {
         'South America': '#FF99CC',
         'Oceania': '#99FFFF',
         'Antarctica': '#E0E0E0',
-    }
+    };
     
-    continent_count = {
+    let continent_count = {
         'Europe': 0,
         'Asia': 0, 
         'Africa': 0,
@@ -64,7 +64,7 @@ try {
         'South America': 0,
         'Oceania': 0,
         'Antarctica': 0,
-    }
+    };
 
     const regions_key =  `regions:${name}`;
     const regions = await kv.lrange(regions_key, 0, -1);
