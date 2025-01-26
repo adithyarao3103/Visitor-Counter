@@ -80,7 +80,7 @@ try {
             country_count[country] = 1;
         }
         colors.push(continent_colors[continent]);
-        continent_count[continet] += 1;
+        continent_count[continent] += 1;
     }
 
     const country_count_sorted = Object.entries(country_count).sort((a, b) => b[1] - a[1]);
