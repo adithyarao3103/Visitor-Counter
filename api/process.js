@@ -89,35 +89,69 @@ try {
     const countryNames = Object.keys(country_count_sorted);
     const visitorCounts = Object.values(country_count_sorted);
 
-    // Chart data configuration
+    const chartJSNodeCanvas = new ChartJSNodeCanvas({
+        width: 1200, // Increased width for better readability
+        height: Math.max(600, Object.keys(country_count).length * 25), // Dynamic height based on number of countries
+        backgroundColour: 'white',
+        plugins: {
+            modern: true,
+            requireLegacy: ['chartjs-plugin-datalabels']
+        }
+    });
+
+    // Update the chartConfig options
     const chartConfig = {
         type: 'bar',
         data: {
-            labels: countryNames,
-            datasets: [
-                {
-                    label: 'Country Visitors',
-                    data: visitorCounts,
-                    backgroundColor: colors,
-                },
-            ],
+            // Convert the sorted array back to arrays of labels and data
+            labels: country_count_sorted.map(item => item[0]),
+            datasets: [{
+                label: 'Country Visitors',
+                data: country_count_sorted.map(item => item[1]),
+                backgroundColor: colors,
+            }]
         },
         options: {
             indexAxis: 'y',
+            font: {
+                family: 'Arial, Helvetica, sans-serif'
+            },
             scales: {
                 x: {
                     type: 'logarithmic',
                     title: {
                         display: true,
                         text: 'Frequency (Log Scale)',
+                        font: {
+                            family: 'Arial, Helvetica, sans-serif',
+                            size: 14
+                        }
                     },
+                    ticks: {
+                        font: {
+                            family: 'Arial, Helvetica, sans-serif',
+                            size: 12
+                        }
+                    }
                 },
+                y: {
+                    ticks: {
+                        font: {
+                            family: 'Arial, Helvetica, sans-serif',
+                            size: 12
+                        }
+                    }
+                }
             },
             plugins: {
                 legend: {
                     display: true,
                     position: 'bottom',
                     labels: {
+                        font: {
+                            family: 'Arial, Helvetica, sans-serif',
+                            size: 12
+                        },
                         generateLabels: () => {
                             return Object.keys(continent_colors).map((continent) => ({
                                 text: `${continent} (${continent_count[continent] || 0})`,
@@ -131,6 +165,7 @@ try {
                     text: 'Distribution of Countries of Visitors (Log Scale)',
                     padding: 20,
                     font: {
+                        family: 'Arial, Helvetica, sans-serif',
                         size: 16,
                         weight: 'bold',
                     },
@@ -138,12 +173,6 @@ try {
             },
         },
     };
-
-    const chartJSNodeCanvas = new ChartJSNodeCanvas({
-        width: 800,
-        height: 600,
-        backgroundColour: 'white'
-    });
     
     // Render chart to a PNG buffer
     const imageBuffer = await chartJSNodeCanvas.renderToBuffer(chartConfig);
