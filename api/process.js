@@ -3,8 +3,6 @@ import crypto from 'crypto';
 import './data.js';
 import { createCanvas } from 'canvas';
 import { ChartJSNodeCanvas } from 'chartjs-node-canvas';
-const { registerFont } = require('canvas');
-registerFont('Arial.ttf', { family: 'Arial' });
 
 export default async function handler(req, res) {
 try {
@@ -112,7 +110,7 @@ try {
         options: {
             indexAxis: 'y',
             font: {
-                family: 'Arial, Helvetica, sans-serif'
+                family: 'sans-serif, Helvetica, sans-serif'
             },
             scales: {
                 x: {
@@ -121,13 +119,13 @@ try {
                         display: true,
                         text: 'Frequency (Log Scale)',
                         font: {
-                            family: 'Arial, Helvetica, sans-serif',
+                            family: 'sans-serif, Helvetica, sans-serif',
                             size: 14
                         }
                     },
                     ticks: {
                         font: {
-                            family: 'Arial, Helvetica, sans-serif',
+                            family: 'sans-serif, Helvetica, sans-serif',
                             size: 12
                         }
                     }
@@ -135,7 +133,7 @@ try {
                 y: {
                     ticks: {
                         font: {
-                            family: 'Arial, Helvetica, sans-serif',
+                            family: 'sans-serif, Helvetica, sans-serif',
                             size: 12
                         }
                     }
@@ -147,7 +145,7 @@ try {
                     position: 'bottom',
                     labels: {
                         font: {
-                            family: 'Arial, Helvetica, sans-serif',
+                            family: 'sans-serif, Helvetica, sans-serif',
                             size: 12
                         },
                         generateLabels: () => {
@@ -163,7 +161,7 @@ try {
                     text: 'Distribution of Countries of Visitors (Log Scale)',
                     padding: 20,
                     font: {
-                        family: 'Arial, Helvetica, sans-serif',
+                        family: 'sans-serif, Helvetica, sans-serif',
                         size: 16,
                         weight: 'bold',
                     },
