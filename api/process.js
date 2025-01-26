@@ -70,7 +70,7 @@ try {
     const regions = await kv.lrange(regions_key, 0, -1);
     let country_count = {};
     let colors = [];
-    for (r in regions){
+    for (let r in regions){
         country = countries[regions[r].country].country;
         continent = countries[regions[r].country].continent;
         if (country_count[country]){
