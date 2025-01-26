@@ -3,6 +3,7 @@
 "version": "1.0.0",
 "dependencies": {
     "@vercel/kv": "^0.2.0",
-    "canvas": "^3.1.0"
+    "canvas": "^3.1.0",
+    "chartjs-node-canvas": "^4.1.6"
 }
 }

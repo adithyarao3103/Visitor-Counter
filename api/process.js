@@ -2,6 +2,7 @@ import { kv } from '@vercel/kv';
 import crypto from 'crypto';
 import './data.js';
 import { createCanvas } from 'canvas';
+import { ChartJSNodeCanvas } from 'chartjs-node-canvas';
 
 export default async function handler(req, res) {
 try {
@@ -16,6 +17,10 @@ try {
     }
 
     const { name, password } = req.query;
+    if (!password) {
+        res.status(401).json({ error: 'Password needed.' });
+        return;
+    }
     if (!name || typeof name !== 'string') {
         res.setHeader('Content-Type', 'text/html');
         res.status(400).send(renderHtml('Valid counter name is required'));
@@ -23,7 +28,8 @@ try {
     }
 
     if (!password) {
-        res.status(401).json({ error: 'Password needed.' });
+        res.setHeader('Content-Type', 'text/html');
+        res.status(401).send(renderHtml('Password is required'));
         return;
     }
 
@@ -40,7 +46,7 @@ try {
         return;
     }
 
-    const continent_colors = {
+    continent_colors = {
         'Europe': '#66B2FF',
         'Asia': '#FF9999', 
         'Africa': '#99FF99',
@@ -48,9 +54,9 @@ try {
         'South America': '#FF99CC',
         'Oceania': '#99FFFF',
         'Antarctica': '#E0E0E0',
-    };
+    }
     
-    const continent_count = {
+    continent_count = {
         'Europe': 0,
         'Asia': 0, 
         'Africa': 0,
@@ -58,94 +64,90 @@ try {
         'South America': 0,
         'Oceania': 0,
         'Antarctica': 0,
+    }
+
+    const regions_key =  `regions:${name}`;
+    const regions = await kv.lrange(regions_key, 0, -1);
+    let country_count = {};
+    let colors = [];
+    for (r in regions){
+        country = countries[regions[r].country].country;
+        continent = countries[regions[r].country].continent;
+        if (country_count[country]){
+            country_count[country] += 1;
+        }
+        else{
+            country_count[country] = 1;
+        }
+        colors.push(continent_colors[continent]);
+        continent_count[continet] += 1;
+    }
+
+    const country_count_sorted = Object.entries(country_count).sort((a, b) => b[1] - a[1]);
+    const continent_count_sorted = Object.entries(continent_count).sort((a, b) => b[1] - a[1]);
+
+    const countryNames = Object.keys(country_count_sorted);
+    const visitorCounts = Object.values(country_count_sorted);
+
+    // Chart data configuration
+    const chartConfig = {
+        type: 'bar',
+        data: {
+            labels: countryNames,
+            datasets: [
+                {
+                    label: 'Country Visitors',
+                    data: visitorCounts,
+                    backgroundColor: colors,
+                },
+            ],
+        },
+        options: {
+            indexAxis: 'y',
+            scales: {
+                x: {
+                    type: 'logarithmic',
+                    title: {
+                        display: true,
+                        text: 'Frequency (Log Scale)',
+                    },
+                },
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'bottom',
+                    labels: {
+                        generateLabels: () => {
+                            return Object.keys(continent_colors).map((continent) => ({
+                                text: `${continent} (${continent_count[continent] || 0})`,
+                                fillStyle: continent_colors[continent],
+                            }));
+                        },
+                    },
+                },
+                title: {
+                    display: true,
+                    text: 'Distribution of Countries of Visitors (Log Scale)',
+                    padding: 20,
+                    font: {
+                        size: 16,
+                        weight: 'bold',
+                    },
+                },
+            },
+        },
     };
 
-    const regions_key = `regions:${name}`;
-    const regions = await kv.lrange(regions_key, 0, -1);
-    const country_count = {};
-    const colors = [];
+    // Render chart to a PNG buffer
+    const imageBuffer = await chartJSNodeCanvas.renderToBuffer(chartConfig);
 
-    regions.forEach(r => {
-        const country = countries[r.country].country;
-        const continent = countries[r.country].continent;
-        
-        country_count[country] = (country_count[country] || 0) + 1;
-        colors.push(continent_colors[continent]);
-        continent_count[continent] += 1;
-    });
-
-    const country_count_sorted = Object.entries(country_count)
-        .sort((a, b) => b[1] - a[1]);
-    const continent_count_sorted = Object.entries(continent_count)
-        .sort((a, b) => b[1] - a[1]);
-
-    // Create visualization
-    const canvas = createCanvas(1400, 1400);
-    const ctx = canvas.getContext('2d');
-
-    // Set background
-    ctx.fillStyle = 'white';
-    ctx.fillRect(0, 0, 1400, 1400);
-
-    // Prepare data for horizontal bar chart
-    const maxVisitors = Math.max(...country_count_sorted.map(([_, count]) => count));
-    const logMaxVisitors = Math.log10(maxVisitors);
-
-    // Draw bars
-    country_count_sorted.forEach((([country, count], index) => {
-        const logCount = Math.log10(count);
-        const barHeight = 40;
-        const y = 100 + index * (barHeight + 10);
-        
-        // Get continent color
-        const continent = countries[Object.keys(countries).find(k => countries[k].country === country)].continent;
-        ctx.fillStyle = continent_colors[continent];
-        
-        // Draw bar
-        const barWidth = (logCount / logMaxVisitors) * 1000;
-        ctx.fillRect(200, y, barWidth, barHeight);
-        
-        // Add country name
-        ctx.fillStyle = 'black';
-        ctx.font = '12px Arial';
-        ctx.textAlign = 'right';
-        ctx.fillText(country, 190, y + barHeight / 2 + 5);
-        
-        // Add count
-        ctx.textAlign = 'left';
-        ctx.fillText(count.toLocaleString(), 210 + barWidth, y + barHeight / 2 + 5);
-    }));
-
-    // Add title
-    ctx.fillStyle = 'black';
-    ctx.font = 'bold 18px Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText('Distribution of Countries of Visitors (Log Scale)', 700, 50);
-
-    // Add legend
-    ctx.font = '12px Arial';
-    continent_count_sorted.forEach(([continent, count], index) => {
-        ctx.fillStyle = continent_colors[continent];
-        ctx.fillRect(1200, 100 + index * 30, 20, 20);
-        ctx.fillStyle = 'black';
-        ctx.textAlign = 'left';
-        ctx.fillText(`${continent} (${count.toLocaleString()})`, 1225, 115 + index * 30);
-    });
-
-    // Convert to PNG
-    const buffer = canvas.toBuffer('image/png');
-
-    // Send PNG response
+    // Send the PNG response
     res.setHeader('Content-Type', 'image/png');
-    res.status(200).send(buffer);
+    res.send(imageBuffer);
 }
 catch (error) {
     console.error('Error getting details:', error);
     res.status(500).json({ error: 'An error occurred while getting details.' });
 }
-}
-
-// Render HTML for error messages (placeholder function)
-function renderHtml(message) {
-    return `<html><body><h1>${message}</h1></body></html>`;
 }
