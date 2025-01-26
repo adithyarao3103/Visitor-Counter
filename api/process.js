@@ -109,9 +109,6 @@ try {
         },
         options: {
             indexAxis: 'y',
-            font: {
-                family: 'sans-serif, Helvetica, sans-serif'
-            },
             scales: {
                 x: {
                     type: 'logarithmic',
@@ -119,13 +116,11 @@ try {
                         display: true,
                         text: 'Frequency (Log Scale)',
                         font: {
-                            family: 'sans-serif, Helvetica, sans-serif',
                             size: 14
                         }
                     },
                     ticks: {
                         font: {
-                            family: 'sans-serif, Helvetica, sans-serif',
                             size: 12
                         }
                     }
@@ -133,7 +128,6 @@ try {
                 y: {
                     ticks: {
                         font: {
-                            family: 'sans-serif, Helvetica, sans-serif',
                             size: 12
                         }
                     }
@@ -145,7 +139,6 @@ try {
                     position: 'bottom',
                     labels: {
                         font: {
-                            family: 'sans-serif, Helvetica, sans-serif',
                             size: 12
                         },
                         generateLabels: () => {
