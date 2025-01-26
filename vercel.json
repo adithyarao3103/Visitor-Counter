@@ -49,6 +49,10 @@
     {
     "src": "/regions",
     "dest": "/api/regions.js"
+    },
+    {
+    "src": "/process",
+    "dest": "/api/process.js"
     }
 ]
 }
